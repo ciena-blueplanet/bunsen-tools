@@ -1,0 +1,86 @@
+{
+    "juniper.resourceTypes.FireflyVcpe" : {
+        "cssClass": "junipervcpe",
+        "fieldGroups": [
+            {
+                "name": "Placement",
+                "description": "Choose the placement for this vCPE.",
+                "fields": {
+                    "domainId": {
+                        "type": "select",
+                        "resourceType": "domains",
+                        "label": "vCPE Resource Domain",
+                        "help": "Please select the resource Domain to host this vCPE.",
+                        "instructor": "providerId",
+                        "instructions": [
+                            {"type":"filter", "operator":"equals", "key":"domainType", "value":"'urn:cyaninc:bp:domain:firefly'"}
+                        ]
+                    },
+                    "accessIp": {},
+                    "netConfPort": {},
+                    "userName": {},
+                    "password": {}
+                }
+            },
+            {
+                "name": "Interfaces",
+                "description": "Set the interface configuration for this vCPE.",
+                "fieldsets": {
+                    "_interfaces": {
+                        "label": "Network Interfaces",
+                        "switch": true,
+                        "disabled": true,
+                        "fields": {
+                            "interfaces": {
+                                "order": "name,ipv4Address,securityZone",
+                                "type": "objectarray",
+                                "description": "",
+                                "label": "Logical Interfaces"
+                            }
+                        }
+                    }
+                }
+            },
+            {
+                "name": "Routing",
+                "description": "Set the routing configuration for this vCPE.",
+                "fieldsets": {
+                    "_staticRouting": {
+                        "label": "Enable Static Route",
+                        "switch": true,
+                        "disabled": true,
+                        "fields": {
+                            "staticRouting": {
+                                "order": "routeDestination,routeNextHop",
+                                "type": "objectarray",
+                                "description": "",
+                                "label": "Static Route"
+                            }
+                        }
+                    }
+                }
+            },
+            {
+                "name": "Firewall",
+                "orientation": "vertical",
+                "description": "Specify the firewall configuration rules for this vCPE",
+                "fieldsets" : {
+                    "_firewall": {
+                        "label": "Enable Firewall",
+                        "switch": true,
+                        "disabled": true,
+                        "fields": {
+                            "firewall.securityPolicies": {
+                                "type": "objectarray",
+                                "label": "Security Policies",
+                                "order": "fromZone,toZone,service,sourcePrefix,destinationPrefix,action,protocol,portType,fromPort,toPort",
+                                "description": "Please enter the firewall policies, one per line, \n in the form of <fromZone> <toZone> <service> <sourcePrefix> <destinationPrefix> <action> <protocol> <from_port> <to_port>"
+                            }
+                        }
+                    }
+                }
+            }
+        ]
+    }
+}
+
