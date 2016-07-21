@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 'use strict'
 
 const commander = require('commander')
@@ -5,24 +7,51 @@ const Promise = require('promise')
 const fsp = require('fs-promise')
 const _ = require('lodash')
 const Logger = require('../lib/logger')
+const UIS2 = require('bunsen-core/lib/validator/view-schemas/v2')
+const bunsenValidator = require('bunsen-core/lib/validator/index')
+const zSchema = require('z-schema')
+const zSchemaValidator = new zSchema()
+
 let logger
 
-function main (infile, outfile) {
-  return readFile(infile).then((results) => {
-    return results
-  }).then((results) => {
-    return parseJSON(results).then((results) => {
-      return results
-    }).catch((err) => {
-      logger.log('ERROR: ' + err)
+function convert (infile, outfile) {
+  return readFile(infile)
+    .then((ui1JSON) => {
+      return parseJSON(ui1JSON).catch((err) => {
+        logger.log('ERROR: ' + err)
+      })
     })
-  }).then((results) => {
-    return convert(results)
-  }).then((ui2) => {
-    return writeFile(outfile, ui2).then((data) => {
-      return data
+    .then((ui1) => {
+      return convertSchema(ui1)
     })
+    .then((ui2) => {
+      return wrapSchema(ui2)
+    })
+    .then((ui2) => {
+      return validate(ui2)
+    })
+    .then((validUi2) => {
+      return writeFile(outfile, validUi2)
+    })
+}
+
+function wrapSchema (ui2) {
+  return Promise.resolve({
+    cellsbells: [
+      {
+        classNames: ui2.classNames,
+        cells: ui2.cells
+      }
+    ]
   })
+}
+
+
+function validate (ui2) {
+  logger.log('validating ')
+  const validation = zSchemaValidator.validate(ui2, UIS2)
+  logger.error(JSON.stringify(zSchemaValidator.getLastErrors(), null, 2))
+  return Promise.resolve(ui2)
 }
 
 function readFile (file) {
@@ -39,18 +68,18 @@ function writeFile (outfile, data) {
   })
 }
 
-function parseJSON(string) {
+function parseJSON (string) {
   let results
   try {
     results = JSON.parse(string)
   } catch (err) {
-    console.error(err)
+    logger.error(err)
     return Promise.reject('JSON failed to parse')
   }
   return Promise.resolve(results)
 }
 
-function convert(ui1) {
+function convertSchema (ui1) {
   const newObj = {}
   logger.log('converting...')
   return convertClassName(ui1, newObj).then((ui2) => {
@@ -58,7 +87,7 @@ function convert(ui1) {
   })
 }
 
-function convertClassName(ui1, ui2) {
+function convertClassName (ui1, ui2) {
   logger.log('converting class name')
   const key = _.keys(ui1)[0]
   const cssClass = ui1[key].cssClass || ''
@@ -66,13 +95,14 @@ function convertClassName(ui1, ui2) {
   return Promise.resolve(ui2)
 }
 
-function convertFieldGroups(ui1, ui2) {
+function convertFieldGroups (ui1, ui2) {
   logger.log('converting field groups')
   const key = _.keys(ui1)[0]
+  logger.log(ui1)
   const fgs = ui1[key].fieldGroups
   const cells = fgs.map((fg) => {
-  const fields = convertFields(fg.fields).concat(convertFieldsets(fg.fieldsets))
-  return {
+    const fields = convertFields(fg.fields).concat(convertFieldsets(fg.fieldsets))
+    return {
       'label': fg.name,
       'cells': fields
     }
@@ -81,7 +111,7 @@ function convertFieldGroups(ui1, ui2) {
   return Promise.resolve(ui2)
 }
 
-function convertFieldsets(fieldsets) {
+function convertFieldsets (fieldsets) {
   logger.log('converting fieldsets')
   return _.map(fieldsets, (fieldset, key) => {
     logger.log('key: ' + key)
@@ -94,7 +124,7 @@ function convertFieldsets(fieldsets) {
   })
 }
 
-function convertFields(fields) {
+function convertFields (fields) {
   logger.log('converting fields...')
   return _.map(fields, (field, key) => {
     return {
@@ -107,32 +137,55 @@ function convertFields(fields) {
   })
 }
 
-function getFormat(field) {
+function getFormat (field) {
   if (field.format) {
     return field.format
   }
   return field.validation === 'required' ? undefined : field.validation
 }
 
-function getRenderer(type) {
+function getRenderer (type) {
   const renderers = {
     'objectarray': '',
-    'select': 'select',
+    'select': 'select'
   }
   return renderers[type]
 }
 
+function getDefaultOutputPath(inputPath) {
+  return `${inputPath.split('.')[0]}-uis2.json`
+}
+
 commander
   .version('1.0.0')
-  .arguments('<inputFile> <outputFile>')
   .option('-v, --verbose', 'more output')
-  .action(function (infile, outfile) {
-    logger = new Logger(commander.verbose)
-    logger.log('verbosity: ' + commander.verbose)
-    main(infile, outfile).then((result) => {
-      logger.log(JSON.stringify(result, null, 2))
-      logger.info('main is finished')
-    })
-  });
 
-commander.parse(process.argv);
+commander
+  .command('convert')
+  .usage('[options] <legacyViewFile> [outputFilePath]')
+  .arguments('<legacyViewFile> [viewFile]')
+  .action(function (infile, outfile) {
+    console.log(infile)
+    if (!infile) {
+      logger.warn('no input file specified')
+      return
+    }
+    outfile = outfile || getDefaultOutputPath(infile)
+    logger = new Logger(commander.verbose)
+    logger.log('verbose mode')
+    convert(infile, outfile).then((result) => {
+      logger.log(JSON.stringify(result, null, 2))
+      logger.info('convert is finished')
+    })
+  })
+
+commander
+  .command('validate')
+  .usage('[options] <viewFile>')
+  .usage('[options] <modelFile> [viewFile]')
+  .arguments('<modelOrViewFile> [viewFile]')
+  .action((infile, outfile) => {
+    logger.info('validating...')
+  })
+
+commander.parse(process.argv)
