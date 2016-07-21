@@ -1,5 +1,4 @@
 const UIS2 = require('bunsen-core/lib/validator/view-schemas/v2')
-const bunsenValidator = require('bunsen-core/lib/validator/index')
 const ZSchema = require('z-schema')
 const zSchemaValidator = new ZSchema()
 import {parseJSON, readFile, isViewFile, isModelFile} from '../lib/utils'
@@ -18,12 +17,12 @@ export function validate (inFile, optionalFile, logger) {
       logger.log('parsed file')
       if (isModelFile(pojo)) {
         logger.info('detected model file')
-        return validateModel(pojo)
+        return validateModel(pojo, logger)
       }
       if (isViewFile(pojo)) {
         logger.info('detected bunsen view file')
         if (optionalFile) {
-          return readfile(optionalFile)
+          return readFile(optionalFile)
             .then((modelJSON) => {
               return parseJSON(modelJSON).catch((err) => {
                 logger.error(JSON.stringify(err, null, 2))
@@ -50,7 +49,7 @@ export function validateView (ui2) {
   return Promise.resolve([ui2, 'valid Bunsen View'])
 }
 
-export function validateModel (model) {
+export function validateModel (model, logger) {
   console.log('validating model...')
   const results = modelValidator(model)
   if (results.errors && results.errors.length) {

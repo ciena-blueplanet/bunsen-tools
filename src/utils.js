@@ -1,5 +1,3 @@
-const ZSchema = require('z-schema')
-const zSchemaValidator = new ZSchema()
 const fsp = require('fs-promise')
 
 export function isViewFile (pojo) {
