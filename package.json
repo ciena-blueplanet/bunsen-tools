@@ -1,6 +1,6 @@
 {
   "name": "bunsen-tools",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "convert ui-schema to ui-schema-2",
   "main": "index.js",
   "scripts": {
