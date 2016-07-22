@@ -16,14 +16,13 @@ module.exports = function (verbose) {
     if (msg instanceof Object) {
       msg = JSON.stringify(msg, null, 2)
     }
-
     console.error('ERROR: '.red + msg)
   }
 
-  this.warning = (msg) => {
+  this.warn = (msg) => {
     if (msg instanceof Object) {
       msg = JSON.stringify(msg, null, 2)
     }
-    console.warning('WARNING: '.yellow + msg)
+    console.warn('WARNING: '.yellow + msg)
   }
 }

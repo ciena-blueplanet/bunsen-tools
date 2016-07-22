@@ -15,15 +15,13 @@ export function parseJSON (string) {
   try {
     results = JSON.parse(string)
   } catch (err) {
-    return Promise.reject(err, 'JSON failed to parse')
+    return Promise.reject([err, 'JSON failed to parse'])
   }
   return Promise.resolve(results)
 }
 
 export function readFile (file) {
-  return fsp.readFile(file, 'utf8').then((results) => {
-    return results
-  })
+  return fsp.readFile(file, 'utf8')
 }
 
 export function writeFile (outfile, data) {
