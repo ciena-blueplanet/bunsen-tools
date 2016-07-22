@@ -2,6 +2,7 @@ import Promise from 'promise'
 import _ from 'lodash'
 import {readFile, writeFile, parseJSON} from './utils'
 import {validateView} from './validate'
+import {setRenderer} from './renderer'
 
 export function convert (infile, outfile, logger) {
   return readFile(infile)
@@ -20,7 +21,8 @@ export function convert (infile, outfile, logger) {
       logger.log('attempting to validate view')
       return validateView(ui2, logger)
     })
-    .then(([validUi2]) => {
+    .then((results) => {
+      const validUi2 = results[0]
       logger.log('validated')
       return writeFile(outfile, validUi2, logger)
     })
@@ -93,25 +95,6 @@ export function convertFields (fields, logger) {
       model: key,
       label: field.label || '',
       description: field.description || field.help || ''
-    }, field.type)
+    }, field, logger)
   })
-}
-
-export function getFormat (field) {
-  if (field.format) {
-    return field.format
-  }
-  return field.validation === 'required' ? undefined : field.validation
-}
-
-export function setRenderer (field, type) {
-  const renderers = {
-    'select': {
-      name: 'select'
-    }
-  }
-  if (renderers[type]) {
-    field.renderer = renderers[type]
-  }
-  return field
 }
