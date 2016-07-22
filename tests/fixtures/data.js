@@ -9,6 +9,29 @@ module.exports = {
       description: 'description'
     }
   },
+  uiSchema2: {
+    classNames: {
+      cell: 'somecssclass'
+    },
+    children: [
+      {
+        label: 'somename',
+        children: [
+          { model: 'somefield', description: '', label: '' },
+          { model: 'someotherfield', description: '', label: '' },
+          {
+            model: 'somefieldset',
+            collapsible: true,
+            description: '',
+            label: '',
+            children: [
+              { model: 'somefieldset_field', description: '', label: '' }
+            ]
+          }
+        ]
+      }
+    ]
+  },
   uiSchema1: {
     'somekey': {
       cssClass: 'somecssclass',

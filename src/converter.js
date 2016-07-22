@@ -20,7 +20,7 @@ export function convert (infile, outfile, logger) {
       logger.log('attempting to validate view')
       return validateView(ui2, logger)
     })
-    .then((validUi2) => {
+    .then(([validUi2, message]) => {
       logger.log('validated')
       return writeFile(outfile, validUi2, logger)
     })
