@@ -28,7 +28,7 @@ commander
     logger.log('verbose mode')
     convert(inFile, outFile, logger)
       .then((result) => {
-        logger.log(JSON.stringify(result))
+        logger.log(JSON.stringify(result, null, 2))
         logger.info('---------------------')
         logger.info('Tada! ┬─┬ ノ( ^_^ノ)')
         logger.info(`${inFile} has been converted to ${outFile}`)
@@ -50,7 +50,7 @@ commander
     logger = new Logger(commander.verbose)
     validate(inFile, optionalFile, logger)
       .then((results) => {
-        logger.log(JSON.stringify(results[0]))
+        logger.log(JSON.stringify(results[0], null, 2))
         logger.info('---------------------')
         logger.info('Tada! ┬─┬ ノ( ^_^ノ)')
         logger.info(`${inFile} is a ${results[1]}`)

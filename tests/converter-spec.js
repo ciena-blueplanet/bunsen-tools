@@ -45,7 +45,6 @@ describe('the converter', function () {
     it('.convert() converts the schema', function () {
       return converter.convert('somefile', 'someotherfile', logger)
         .then((result) => {
-          console.log(result)
           expect(readFileSpy.lastCall.args[0]).to.eql('somefile')
           expect(parseJSONSpy.called).to.be.ok
           expect(validateViewSpy.called).to.be.ok
