@@ -28,10 +28,11 @@ describe('the converter', function () {
     let parseJSONSpy, validateViewSpy
 
     beforeEach(function () {
+      const valResult = [data.uiSchema2, 'valid Bunsen View']
       readFileSpy = sinon.stub(fsp, 'readFile').returns(Promise.resolve('hello'))
       writeFileSpy = sinon.stub(fsp, 'writeFile').returns(Promise.resolve('hello'))
-      parseJSONSpy = sinon.stub(utils, 'parseJSON').returns(Promise.resolve('hello'))
-      validateViewSpy = sinon.stub(validate, 'validateView').returns(Promise.resolve('hello'))
+      parseJSONSpy = sinon.stub(utils, 'parseJSON').returns(Promise.resolve(data.uiSchema2))
+      validateViewSpy = sinon.stub(validate, 'validateView').returns(Promise.resolve(valResult))
     })
 
     afterEach(function () {
@@ -47,7 +48,7 @@ describe('the converter', function () {
           expect(readFileSpy.lastCall.args[0]).to.eql('somefile')
           expect(parseJSONSpy.called).to.be.ok
           expect(validateViewSpy.called).to.be.ok
-          expect(writeFileSpy.called).to.be.ok
+          expect(writeFileSpy.lastCall.args[1]).to.eql(`${JSON.stringify(data.uiSchema2, null, 2)}\n`)
         })
     })
   })
@@ -147,32 +148,9 @@ describe('the converter', function () {
   })
 
   it('.convertSchema() converts a schema', function () {
-    const expected = {
-      classNames: {
-        cell: 'somecssclass'
-      },
-      children: [
-        {
-          label: 'somename',
-          children: [
-            { model: 'somefield', description: '', label: '' },
-            { model: 'someotherfield', description: '', label: '' },
-            {
-              model: 'somefieldset',
-              collapsible: true,
-              description: '',
-              label: '',
-              children: [
-                { model: 'somefieldset_field', description: '', label: '' }
-              ]
-            }
-          ]
-        }
-      ]
-    }
     return converter.convertSchema(data.uiSchema1, logger)
       .then((result) => {
-        expect(result).to.eql(expected)
+        expect(result).to.eql(data.uiSchema2)
       })
   })
 
