@@ -60,7 +60,7 @@ export function convertFieldGroups (ui1, ui2, logger) {
   logger.log('converting field groups')
   const key = _.keys(ui1)[0]
   logger.log(ui1)
-  const fgs = ui1[key].fieldGroups
+  const fgs = ui1[key].fieldGroups || []
   const children = fgs.map((fg) => {
     const fields = convertFields(fg.fields, logger).concat(convertFieldsets(fg.fieldsets, logger))
     return {
@@ -78,8 +78,9 @@ export function convertFieldsets (fieldsets, logger) {
     logger.log('key: ' + key)
     return {
       model: key.split('_').join(''),
+      label: fieldset.label || '',
       description: fieldset.description || fieldset.help || '',
-      collapsible: fieldset['switch'],
+      collapsible: fieldset['switch'] || true,
       children: convertFields(fieldset.fields, logger)
     }
   })

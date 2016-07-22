@@ -11,7 +11,7 @@
     "build": "npm run build-lib && npm run build-cli",
     "lint": "eslint *.js src bin tests",
     "test": "npm run lint && npm run utest",
-    "utest": "npm run build && istanbul cover _mocha -- --recursive tests"
+    "utest": "npm run build && istanbul cover _mocha -- tests"
   },
   "author": "Chris Stoll",
   "license": "MIT",
