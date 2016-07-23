@@ -1,0 +1,164 @@
+{
+    "juniper.resourceTypes.FireflyVcpeVnf" : {
+        "cssClass": "junipervcpe",
+        "fieldGroups": [
+            {
+                "name": "VNF Deployment",
+                "description": "Enter the deployment details for this Firefly VNF",
+                "fields": {
+                    "vnfDomainId": {
+                        "type": "select",
+                        "resourceType": "domains",
+                        "label": "VNF Resource Domain",
+                        "help": "Please select the resource Domain to host this Firefly VNF.",
+                        "instructor": "providerId",
+                        "instructions": [
+                            {"type":"filter", "operator":"equals", "key":"domainType", "value":"'OpenStack'"}
+                        ]
+                    },
+                    "domainId": {
+                        "type": "select",
+                        "resourceType": "domains",
+                        "label": "vCPE Resource Domain",
+                        "help": "Please select the resource Domain to host this vCPE.",
+                        "instructor": "providerId",
+                        "instructions": [
+                            {"type":"filter", "operator":"equals", "key":"domainType", "value":"'urn:cyaninc:bp:domain:firefly'"}
+                        ]
+                    },
+                    "flavorVmProduct": {
+                        "type": "select",
+                        "resourceType": "products",
+                        "validation": "required",
+                        "label": "Flavor",
+                        "instructor": "vnfDomainId",
+                        "instructions": [
+                            {"type":"filter", "operator": "byProvider", "value":"instructor"},
+                            {"and" : {"type":"filter", "operator":"equals", "key":"resourceTypeId", "value":"'openstack.resourceTypes.VirtualMachine'"}}
+                        ]
+                    },
+                    "image": {
+                        "type": "select",
+                        "validation": "required",
+                        "label": "Image",
+                        "instructor": "vnfDomainId",
+                        "resourceType": "tosca.resourceTypes.Image",
+                        "instructions": [
+                            {"type":"filter", "operator": "byProvider", "value":"instructor"},
+                            {"and": {"type":"filter", "operator":"contains", "key":"label", "value":"'Firefly'"}}
+                        ]
+                    },
+                    "privateNet": {
+                        "type": "select",
+                        "resourceType": "tosca.resourceTypes.Network",
+                        "instructor": "vnfDomainId",
+                        "label": "Private Network",
+                        "prompt": "Please select a VNF Domain first",
+                        "instructions": [
+                            {"type":"filter", "operator": "byProvider", "value":"instructor"},
+                            {"and": {"type":"filter", "operator":"contains", "key":"label", "value":"'private'"}}
+                        ]
+                    },
+                    "publicNet": {
+                        "type": "select",
+                        "resourceType": "tosca.resourceTypes.Network",
+                        "instructor": "vnfDomainId",
+                        "label": "Public Network",
+                        "prompt": "Please select a VNF Domain first",
+                        "instructions": [
+                            {"type":"filter", "operator": "byProvider", "value":"instructor"},
+                            {"and": {"type":"filter", "operator":"contains", "key":"label", "value":"'public'"}}
+                        ]
+                    }
+                }
+            },
+            {
+                "name": "Access & Security",
+                "description": "Control access to your instance via keypairs, security groups, and other mechanisms.",
+                "fields": {
+                    "keyPair": {
+                        "type": "select",
+                        "instructor": "vnfDomainId",
+                        "label": "Key Pair",
+                        "resourceType": "tosca.resourceTypes.KeyPair"
+                    },
+                    "securityGroup": {
+                        "instructor": "vnfDomainId",
+                        "type": "select",
+                        "label": "Security Group",
+                        "resourceType": "tosca.resourceTypes.SecurityGroup"
+                    }
+                }
+            },
+            {
+                "name": "Dataplane",
+                "description": "Enter the dataplane networking information for this Firefly VNF.",
+                "fields": {
+                    "ge-001-Net": {
+                        "type": "select",
+                        "resourceType": "tosca.resourceTypes.Network",
+                        "instructor": "vnfDomainId",
+                        "label": "ge-0/0/1 Network",
+                        "prompt": "Please select a VNF Domain first",
+                        "instructions": [
+                            {"type":"filter", "operator": "byProvider", "value":"instructor"},
+                            {"and": {"type":"filter", "logic":"and", "operator":"omits", "key":"label", "value":"'private'"}},
+                            {"and": {"type":"filter", "logic":"and", "operator":"omits", "key":"label", "value":"'public'"}}
+                        ]
+                    },
+                    "ge-002-Net": {
+                        "type": "select",
+                        "resourceType": "tosca.resourceTypes.Network",
+                        "instructor": "vnfDomainId",
+                        "label": "ge-0/0/2 Network",
+                        "prompt": "Please select a VNF Domain first",
+                        "instructions": [
+                            {"type":"filter", "operator": "byProvider", "value":"instructor"},
+                            {"and": {"type":"filter", "logic":"and", "operator":"omits", "key":"label", "value":"'private'"}},
+                            {"and": {"type":"filter", "logic":"and", "operator":"omits", "key":"label", "value":"'public'"}}
+                        ]
+                    }
+                }
+            },
+            {
+                "name": "Routing",
+                "description": "Set the routing configuration for this vCPE.",
+                "fieldsets": {
+                    "_staticRouting": {
+                        "label": "Enable Static Route",
+                        "switch": true,
+                        "disabled": true,
+                        "fields": {
+                            "staticRouting": {
+                                "order": "routeDestination,routeNextHop",
+                                "type": "objectarray",
+                                "description": "",
+                                "label": "Static Route"
+                            }
+                        }
+                    }
+                }
+            },
+            {
+                "name": "Firewall",
+                "orientation": "vertical",
+                "description": "Specify the firewall configuration rules for this vCPE",
+                "fieldsets" : {
+                    "_firewall": {
+                        "label": "Enable Firewall",
+                        "switch": true,
+                        "disabled": true,
+                        "fields": {
+                            "firewall.securityPolicies": {
+                                "type": "objectarray",
+                                "label": "Security Policies",
+                                "order": "fromZone,toZone,service,sourcePrefix,destinationPrefix,action,protocol,portType,fromPort,toPort",
+                                "description": "Please enter the firewall policies, one per line, \n in the form of <fromZone> <toZone> <service> <sourcePrefix> <destinationPrefix> <action> <protocol> <from_port> <to_port>"
+                            }
+                        }
+                    }
+                }
+            }
+        ]
+    }
+}
