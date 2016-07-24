@@ -97,7 +97,7 @@ export function setRenderer (newField, field, logger) {
   return newField
 }
 
-export function setRendererOptions (renderer, uis1Field) {
+export function setRendererOptions (renderer, uis1Field, logger) {
   const options = {}
   setModelType(options, uis1Field)
   smartSet(options, 'valueAttribute', uis1Field)

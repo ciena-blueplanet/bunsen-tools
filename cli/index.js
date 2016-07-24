@@ -7,25 +7,21 @@ import {convert} from '../lib/converter'
 import {validate} from '../lib/validate'
 import {getDefaultOutputPath} from '../lib/utils'
 import fs from 'fs'
+import _ from 'lodash'
 
 import {fillString} from '../assets/strings'
 import 'colors'
 
-let logger
+import packageInfo from '../package.json'
 
-export function watch (app, file, callback) {
+export function watch (file, callback) {
   if (commander.watch) {
     fs.watch(file, {encoding: 'buffer'}, callback)
   }
 }
 
 export function converter (inFile, outFile, logger) {
-  if (!inFile) {
-    logger.warn('no input file specified')
-    return
-  }
   outFile = outFile || getDefaultOutputPath(inFile)
-  logger = new Logger(commander.verbose)
   logger.log('verbose mode')
   convert(inFile, outFile, logger)
     .then((result) => {
@@ -42,6 +38,11 @@ export function converter (inFile, outFile, logger) {
 }
 
 export function validator (inFile, optionalFile, logger) {
+  if (!inFile) {
+    logger.warn('no input file specified')
+    return
+  }
+
   validate(inFile, optionalFile, logger)
     .then((results) => {
       logger.log(JSON.stringify(results[0], null, 2))
@@ -53,44 +54,69 @@ export function validator (inFile, optionalFile, logger) {
   logger.print(fillString('validation.onValidating', [inFile.cyan]))
 }
 
-export function validateAction (inFile, optionalFile) {
-  logger = new Logger(commander.verbose)
+export function validateAction (logger, inFile, optionalFile) {
+  if (!inFile) {
+    logger.warn('no input file specified')
+    return
+  }
   validator(inFile, optionalFile, logger)
-  watch(this, inFile, (eventType, filename) => {
+  watch(inFile, (eventType, filename) => {
     logger.print(fillString('validation.onChangeObserved', [inFile]))
     validator(inFile, optionalFile, logger)
   })
 }
 
-export function convertAction (inFile, outFile) {
-  converter(inFile, outFile)
-  watch(commander, inFile, (eventType, filename) => {
+export function convertAction (logger, inFile, outFile) {
+  console.log('no file')
+  if (!inFile) {
+    logger.warn('no input file specified')
+    return
+  }
+  converter(inFile, outFile, logger)
+  watch(inFile, (eventType, filename) => {
     convert(inFile, outFile, logger)
   })
 }
 
-export function startBunsen (processHandle) {
+export function startBunsen (commander, processHandle, convertHandler, validateHandler, logger, version) {
   commander
-    .version('1.0.0')
-    .option('-v, --verbose', 'more output')
-    .option('-w, --watch', 'watch file for changes')
+    .version(version)
 
   commander
     .command('convert')
+    .alias('c')
+    .description('convert old view formats into UI Schema 2')
+    .option('-v, --verbose', 'more output')
+    .option('-w, --watch', 'watch file for changes')
     .usage('[options] <legacyViewFile> [outputFilePath]')
     .arguments('<legacyViewFile> [viewFile]')
-    .action(convertAction)
+    .action(_.bind(convertHandler, null, logger))
 
   commander
     .command('validate')
+    .alias('v')
+    .description('validate a Bunsen Model or View, or validate a Bunsen View against a Bunsen Model')
+    .option('-v, --verbose', 'more output')
+    .option('-w, --watch', 'watch file for changes')
     .usage('[options] <viewFile>')
     .usage('[options] <modelFile> [viewFile]')
     .arguments('<modelOrViewFile> [viewFile]')
-    .action(validateAction)
+    .action(_.bind(validateHandler, null, logger))
 
   commander.parse(processHandle.argv)
+
+  logger.verbose = commander.verbose
 
   return commander
 }
 
-startBunsen(process)
+let logger = new Logger()
+
+startBunsen(
+  commander,
+  process,
+  convertAction,
+  validateAction,
+  logger,
+  packageInfo.version
+)
