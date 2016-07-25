@@ -98,7 +98,7 @@ export function convertFields (fields, logger) {
       description: field.description || field.help || ''
     }
     const placeholder = field.placeholder || field.prompt
-    if (placeholder) _.extend(newField, {placeholder}) 
+    if (placeholder) _.extend(newField, {placeholder})
     setTransforms(newField, field, logger)
     const result = setRenderer(newField, field, logger)
     return result

@@ -67,7 +67,6 @@ export function validateAction (logger, inFile, optionalFile) {
 }
 
 export function convertAction (logger, inFile, outFile) {
-  console.log('no file')
   if (!inFile) {
     logger.warn('no input file specified')
     return

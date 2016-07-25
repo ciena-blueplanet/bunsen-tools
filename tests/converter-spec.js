@@ -116,9 +116,8 @@ describe('the converter', function () {
         ]
       }
     }]
-  console.log(result)
-  expect(result).to.eql(expected)
-})
+    expect(result).to.eql(expected)
+  })
 
   it('.convertFields() converts fields', function () {
     const result = converter.convertFields(data.fields, logger)

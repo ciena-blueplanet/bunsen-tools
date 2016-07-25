@@ -1,9 +1,12 @@
+'use strict'
+
 var exec = require('child-process-promise').exec
 var expect = require('chai').expect
 
+/* eslint no-undef:0 */
+
 describe('integration test', function () {
   beforeEach(function () {
-    console.log('before')
   })
   it('exists', function () {
     return exec('bunsen')
@@ -35,5 +38,6 @@ describe('integration test', function () {
         expect(error).to.be.ok
       })
   })
+  it
 })
 
