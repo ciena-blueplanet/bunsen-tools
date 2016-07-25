@@ -26,22 +26,23 @@ export function transformObject (uis1Transform) {
 }
 
 export function setTransforms (newField, oldField, logger) {
-  newField.transforms = {}
+  const transforms = {}
   if (oldField.modelTransform) {
     if (oldField.modelTransform['toObject']) {
-      newField.transforms.write = [transformObject(oldField.modelTransform.toObject)]
+      transforms.write = [transformObject(oldField.modelTransform.toObject)]
     }
     if (oldField.modelTransform['replace']) {
-      newField.transforms.write = [transformString(oldField.modelTransform.replace)]
+      transforms.write = [transformString(oldField.modelTransform.replace)]
     }
   }
   if (oldField.viewTransform) {
     if (oldField.viewTransform['toObject']) {
-      newField.transforms.read = [transformObject(oldField.viewTransform.toObject)]
+      transforms.read = [transformObject(oldField.viewTransform.toObject)]
     }
     if (oldField.viewTransform['replace']) {
-      newField.transforms.read = [transformString(oldField.viewTransform.replace)]
+      transforms.read = [transformString(oldField.viewTransform.replace)]
     }
   }
+  if (!_.isEmpty(transforms)) _.set(newField, 'transforms', transforms)
   return newField
 }

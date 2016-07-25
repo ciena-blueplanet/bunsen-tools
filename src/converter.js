@@ -3,6 +3,7 @@ import _ from 'lodash'
 import {readFile, writeFile, parseJSON} from './utils'
 import {validateView} from './validate'
 import {setRenderer} from './renderer'
+import {setTransforms} from './transforms'
 
 export function convert (infile, outfile, logger) {
   return readFile(infile)
@@ -91,10 +92,15 @@ export function convertFieldsets (fieldsets, logger) {
 export function convertFields (fields, logger) {
   logger.log('converting fields...')
   return _.map(fields, (field, key) => {
-    return setRenderer({
+    const newField = {
       model: key,
       label: field.label || '',
       description: field.description || field.help || ''
-    }, field, logger)
+    }
+    const placeholder = field.placeholder || field.prompt
+    if (placeholder) _.extend(newField, {placeholder}) 
+    setTransforms(newField, field, logger)
+    const result = setRenderer(newField, field, logger)
+    return result
   })
 }

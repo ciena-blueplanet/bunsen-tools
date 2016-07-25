@@ -29,7 +29,25 @@
             {
               "model": "accessIp",
               "label": "",
-              "description": ""
+              "description": "",
+              "transforms": {
+                "write": [
+                  {
+                    "object": {
+                      "id": "${id}",
+                      "something": "literal",
+                      "label": "${label}"
+                    }
+                  }
+                ],
+                "read": [
+                  {
+                    "from": "\n",
+                    "to": ",",
+                    "global": true
+                  }
+                ]
+              }
             },
             {
               "model": "netConfPort",
