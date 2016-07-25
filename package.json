@@ -1,22 +1,25 @@
 {
   "name": "bunsen-tools",
-  "version": "1.0.4",
+  "version": "1.1.0",
   "description": "convert ui-schema to ui-schema-2",
   "main": "index.js",
   "scripts": {
     "start": "node ./bin/cli.js",
-    "watch": "babel-watch cli/index.js --presets es2015 --plugins add-module-exports",
+    "watch": "npm-watch",
     "build-lib": "babel src -d lib --presets es2015 --plugins add-module-exports",
     "build-cli": "babel cli -d bin --presets es2015 --plugins add-module-exports",
     "build": "npm run build-lib && npm run build-cli",
     "lint": "eslint *.js src bin tests",
     "test": "npm run lint && npm run utest",
-    "utest": "npm run build && istanbul cover _mocha -- tests",
-    "watch": "npm-watch"
+    "utest": "npm run build && istanbul cover _mocha -- tests"
   },
   "watch": {
     "utest": {
-      "patterns": ["src", "tests", "cli"],
+      "patterns": [
+        "src",
+        "tests",
+        "cli"
+      ],
       "extentions": "js,json",
       "quiet": true
     }
