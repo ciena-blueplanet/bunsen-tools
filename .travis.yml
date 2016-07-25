@@ -9,6 +9,7 @@ before_install:
 - npm install -g coveralls pr-bumper
 - pr-bumper check
 before_script:
+- npm run build
 - npm link
 after_success:
 - npm unlink
