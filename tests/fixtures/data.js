@@ -9,6 +9,20 @@ module.exports = {
       description: 'description'
     }
   },
+  fieldWithInstructions: {
+    type: 'select',
+    resourceType: 'tosca.resourceTypes.Network',
+    labelAttribute: 'label-attr',
+    instructor: 'vnfDomainId',
+    label: 'Public Network',
+    prompt: 'Please select a VNF Domain first',
+    instructions: [
+      {'type': 'filter', operator: 'byProvider', value: 'instructor'},
+      {'and': {'type': 'filter', operator: 'equals', key: 'label', value: '\'public\''}},
+      {'and': {'type': 'filter', operator: 'equals', key: 'properties.vPort', value: '\'1000\''}},
+      {'or': {'type': 'filter', operator: 'contains', key: 'properties.port', value: 'properties.otherprop'}}
+    ]
+  },
   uiSchema2: {
     classNames: {
       cell: 'somecssclass'

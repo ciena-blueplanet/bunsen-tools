@@ -51,6 +51,14 @@ describe('the converter', function () {
           expect(writeFileSpy.lastCall.args[1]).to.eql(`${JSON.stringify(data.uiSchema2, null, 2)}\n`)
         })
     })
+
+    it('.convert() crashes on bad json', function () {
+      parseJSONSpy.returns(Promise.reject('someerror'))
+      return converter.convert('somefile', null, logger)
+        .catch((error) => {
+          expect(error).to.be.ok
+        })
+    })
   })
 
   it('.wrapsSchema() to give it the final shape', function () {
@@ -152,15 +160,5 @@ describe('the converter', function () {
       .then((result) => {
         expect(result).to.eql(data.uiSchema2)
       })
-  })
-
-  it('.getFormat() gets the format', function () {
-    expect(converter.getFormat({format: 'heythere'})).to.eql('heythere')
-    expect(converter.getFormat({validation: 'required'})).to.eql(undefined)
-    expect(converter.getFormat({validation: 'something'})).to.eql('something')
-  })
-
-  it('.setRenderer() chooses the right renderer', function () {
-    expect(converter.setRenderer({}, 'select').renderer.name).to.eql('select')
   })
 })

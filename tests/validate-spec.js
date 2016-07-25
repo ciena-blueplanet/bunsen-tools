@@ -7,6 +7,7 @@ var fsp = require('fs-promise')
 var sinon = require('sinon')
 // var Promise = require('promise')
 var Logger = require('../lib/logger')
+var bunsenModelValidator = require('bunsen-core/lib/validator/model')
 
 describe('the validator', function () {
   let logger, view, model, readFileStub, infoStub, errorStub
@@ -35,25 +36,45 @@ describe('the validator', function () {
     expect(validate).to.be.ok
   })
 
-  it('validates a good model', function () {
+  it('.validateModel() validates a good model', function () {
     return validate.validateModel(JSON.parse(model), logger)
       .then((result) => {
         expect(result[0]).to.eql(JSON.parse(model))
       })
   })
 
-  it('validates a view', function () {
+  it('.validateModel() fails a bad model', function () {
+    return validate.validateModel({}, logger)
+      .catch((error) => {
+        expect(error).to.be.ok
+      })
+  })
+
+  it('.validateModel() warn model validation warnings', function () {
+    sinon.stub(bunsenModelValidator, 'validate').returns({warnings: ['somewarning']})
+    sinon.stub(logger, 'warn')
+    validate.validateModel({}, logger)
+    expect(logger.warn.called).to.be.ok
+    bunsenModelValidator.validate.restore()
+  })
+
+  it('.validateView() validates a view', function () {
     return validate.validateView(JSON.parse(view), logger)
       .then((result) => {
         expect(result[0]).to.eql(JSON.parse(view))
       })
   })
 
-  // TODO: figure out if we can get rid of the Ember dep in bunsen-core
-  //       that I think is breaking this test
-  // it('validates a model and a view', function () {
-  //   expect(validate.validateViewWithModel({}, {}, logger)).to.be.ok
-  // })
+  it('.validateView() fails a bad view', function () {
+    return validate.validateView({}, logger)
+      .catch((error) => {
+        expect(error).to.be.ok
+      })
+  })
+
+  it('validates a model and a view', function () {
+    expect(validate.validateViewWithModel({}, {}, logger)).to.be.ok
+  })
 
   it('handles validation for a model', function () {
     return validate.validate('somemodel', undefined, logger)

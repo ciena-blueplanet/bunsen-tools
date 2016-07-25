@@ -4,12 +4,16 @@ module.exports = function (verbose) {
   this.verbose = verbose
   this.log = (msg) => {
     if (this.verbose) {
-      console.log('LOG: ' + msg)
+      console.log(msg)
     }
   }
 
+  this.success = (msg) => {
+    console.log('\nSUCCESS: '.green + '\n' + msg)
+  }
+
   this.info = (msg) => {
-    console.info('INFO: '.blue + msg)
+    console.info('INFO: '.cyan + msg)
   }
 
   this.error = (msg) => {
@@ -24,5 +28,9 @@ module.exports = function (verbose) {
       msg = JSON.stringify(msg, null, 2)
     }
     console.warn('WARNING: '.yellow + msg)
+  }
+
+  this.print = (msg) => {
+    console.log(msg)
   }
 }
