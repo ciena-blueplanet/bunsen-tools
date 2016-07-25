@@ -8,7 +8,10 @@ branches:
 before_install:
 - npm install -g coveralls pr-bumper
 - pr-bumper check
+before_script:
+- npm link
 after_success:
+- npm unlink
 - cat coverage/lcov.info | coveralls
 addons:
   apt:
