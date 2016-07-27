@@ -3,7 +3,7 @@
 /* eslint no-undef:0 */
 
 var expect = require('chai').expect
-var converter = require('../lib/converter')
+var converter = require('../lib/converter-uis1')
 var Logger = require('../lib/logger')
 var fsp = require('fs-promise')
 var sinon = require('sinon')
@@ -24,14 +24,13 @@ describe('the converter', function () {
   })
 
   describe('.convert()', function () {
-    let readFileSpy, writeFileSpy
-    let parseJSONSpy, validateViewSpy
+    let validateViewSpy
 
     beforeEach(function () {
       const valResult = [data.uiSchema2, 'valid Bunsen View']
-      readFileSpy = sinon.stub(fsp, 'readFile').returns(Promise.resolve('hello'))
-      writeFileSpy = sinon.stub(fsp, 'writeFile').returns(Promise.resolve('hello'))
-      parseJSONSpy = sinon.stub(utils, 'parseJSON').returns(Promise.resolve(data.uiSchema2))
+      sinon.stub(fsp, 'readFile').returns(Promise.resolve('hello'))
+      sinon.stub(utils, 'parseJSON').returns(Promise.resolve(data.uiSchema2))
+      sinon.stub(fsp, 'writeFile').returns(Promise.resolve('hello'))
       validateViewSpy = sinon.stub(validate, 'validateView').returns(Promise.resolve(valResult))
     })
 
@@ -42,21 +41,10 @@ describe('the converter', function () {
       validate.validateView.restore()
     })
 
-    it('.convert() converts the schema', function () {
-      return converter.convert('somefile', 'someotherfile', logger)
+    it('converts the schema', function () {
+      return converter.convert({foo: 'bar'}, 'someotherfile', logger)
         .then((result) => {
-          expect(readFileSpy.lastCall.args[0]).to.eql('somefile')
-          expect(parseJSONSpy.called).to.be.ok
           expect(validateViewSpy.called).to.be.ok
-          expect(writeFileSpy.lastCall.args[1]).to.eql(`${JSON.stringify(data.uiSchema2, null, 2)}\n`)
-        })
-    })
-
-    it('.convert() crashes on bad json', function () {
-      parseJSONSpy.returns(Promise.reject('someerror'))
-      return converter.convert('somefile', null, logger)
-        .catch((error) => {
-          expect(error).to.be.ok
         })
     })
   })

@@ -1,41 +1,30 @@
 import Promise from 'promise'
 import _ from 'lodash'
-import {readFile, writeFile, parseJSON} from './utils'
 import {validateView} from './validate'
 import {setRenderer} from './renderer'
 
-export function convert (infile, outfile, logger) {
-  return readFile(infile)
-    .then((ui1JSON) => {
-      return parseJSON(ui1JSON).catch((err) => {
-        logger.error(err)
-      })
+export function convert (uis1, outfile, logger) {
+  return convertSchema(uis1, logger)
+    .then((uis2) => {
+      return wrapSchema(uis2, logger)
     })
-    .then((ui1) => {
-      return convertSchema(ui1, logger)
-    })
-    .then((ui2) => {
-      return wrapSchema(ui2, logger)
-    })
-    .then((ui2) => {
+    .then((uis2) => {
       logger.log('attempting to validate view')
-      return validateView(ui2, logger)
-    })
-    .then((results) => {
-      const validUi2 = results[0]
-      logger.log('validated')
-      return writeFile(outfile, validUi2, logger)
+      return validateView(uis2, logger)
+        .then((result) => {
+          return result[0]
+        })
     })
 }
 
-export function wrapSchema (ui2) {
+export function wrapSchema (uis2) {
   return Promise.resolve({
     type: 'form',
     version: '2.0',
     cells: [
       {
-        classNames: ui2.classNames,
-        children: ui2.children
+        classNames: uis2.classNames,
+        children: uis2.children
       }
     ]
   })

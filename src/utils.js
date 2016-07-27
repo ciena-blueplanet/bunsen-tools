@@ -1,4 +1,6 @@
 const fsp = require('fs-promise')
+const _ = require('lodash')
+const strings = require('../assets/strings')
 
 export function isViewFile (pojo) {
   return pojo.type === 'detail' ||
@@ -15,7 +17,7 @@ export function parseJSON (string) {
   try {
     results = JSON.parse(string)
   } catch (err) {
-    return Promise.reject([err, 'JSON failed to parse'])
+    return Promise.reject(strings.strings.conversion.errors.invalidJson)
   }
   return Promise.resolve(results)
 }
@@ -32,4 +34,14 @@ export function writeFile (outfile, data) {
 
 export function getDefaultOutputPath (inputPath) {
   return `${inputPath.split('.')[0]}-uis2.json`
+}
+
+export function getLegacyViewType (view) {
+  if (view.type === 'form' || view.type === 'detail') {
+    return Promise.resolve('bv1')
+  }
+  if (_.keys(view)[0] && _.keys(view)[0].split('.').length === 3) {
+    return Promise.resolve('uis1')
+  }
+  return Promise.reject(strings.strings.conversion.errors.noViewType)
 }

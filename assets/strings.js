@@ -22,6 +22,8 @@ const CONVERTED =
 ${DIVIDER}${DIVIDER}
 `
 
+const NO_VIEW_TYPE = 'Not a valid Bunsen or UI Schema view'
+
 const INVALID =
 `Dang! (╯°□°)╯︵ ┻━┻')
 <FILENAME> is not valid
@@ -29,6 +31,8 @@ const INVALID =
 <ERROR>
 ${DIVIDER}${DIVIDER}
 `
+
+const INVALID_JSON = 'Unable to parse JSON'
 
 const VALID =
 `Tada! ┬─┬ ノ( ^_^ノ)
@@ -45,7 +49,11 @@ Validating <FILENAME>
 const STRINGS = {
   conversion: {
     onConverted: CONVERTED,
-    onConverting: CONVERTING
+    onConverting: CONVERTING,
+    errors: {
+      noViewType: NO_VIEW_TYPE,
+      invalidJson: INVALID_JSON
+    }
   },
   validation: {
     onChangeObserved: CHANGE_OBSERVED,
