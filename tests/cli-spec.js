@@ -74,7 +74,8 @@ describe('the cli', function () {
   it('.converter() bails if no file specified', function () {
     cli.convertAction.restore()
     sinon.stub(cli, 'converter')
-    const commander = cli.startBunsen({argv: ['', '', 'convert', 'something']})
+    const processMock = {argv: ['', '', 'convert', 'something']}
+    const cmdr = cli.startBunsen(commander, processMock, cli.validateAction, cli.convertAction, logger, '1.1.1')
     expect(cli.converter.called).not.to.be.ok
   })
 
