@@ -1,3 +1,7 @@
+# 1.2.0
+- now supports converting UI Schema transforms to UI Schema 2 transforms
+- has cli test coverage
+
 # 1.1.0
 - adds file watching support to the `validate` command via the `-w` or `--watch` option
 - better output formatting
