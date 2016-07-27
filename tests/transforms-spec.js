@@ -53,18 +53,18 @@ describe('transforms', function () {
       }
     }
     expect(transforms.setTransforms({}, field, logger)).to.eql(expected)
-    
-    const toObject  = _.cloneDeep(field.modelTransform.toObject)
-    const replace  = _.cloneDeep(field.viewTransform.replace)
+
+    const toObject = _.cloneDeep(field.modelTransform.toObject)
+    const replace = _.cloneDeep(field.viewTransform.replace)
     const flippedField = {
       viewTransform: {
-        toObject: toObject,
+        toObject: toObject
       },
       modelTransform: {
         replace: replace
       }
     }
-		expected = {
+    expected = {
       transforms: {
         read: [
           {
@@ -85,8 +85,7 @@ describe('transforms', function () {
         ]
       }
     }
-		expect(transforms.setTransforms({}, flippedField, logger)).to.eql(expected) 
-
+    expect(transforms.setTransforms({}, flippedField, logger)).to.eql(expected)
   })
 
   it('.transformObject() converts object transforms', function () {
