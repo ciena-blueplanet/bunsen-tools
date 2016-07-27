@@ -101,9 +101,7 @@
                         "label": "ge-0/0/1 Network",
                         "prompt": "Please select a VNF Domain first",
                         "instructions": [
-                            {"type":"filter", "operator": "byProvider", "value":"instructor"},
-                            {"and": {"type":"filter", "logic":"and", "operator":"omits", "key":"label", "value":"'private'"}},
-                            {"and": {"type":"filter", "logic":"and", "operator":"omits", "key":"label", "value":"'public'"}}
+                            {"type":"filter", "operator": "byProvider", "value":"instructor"}
                         ]
                     },
                     "ge-002-Net": {
@@ -114,8 +112,7 @@
                         "prompt": "Please select a VNF Domain first",
                         "instructions": [
                             {"type":"filter", "operator": "byProvider", "value":"instructor"},
-                            {"and": {"type":"filter", "logic":"and", "operator":"omits", "key":"label", "value":"'private'"}},
-                            {"and": {"type":"filter", "logic":"and", "operator":"omits", "key":"label", "value":"'public'"}}
+                            {"and": {"type":"filter", "logic":"and", "operator":"omits", "key":"label", "value":"'private'"}}
                         ]
                     }
                 }

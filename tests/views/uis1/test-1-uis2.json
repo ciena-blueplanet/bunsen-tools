@@ -1,0 +1,126 @@
+{
+  "type": "form",
+  "version": "2.0",
+  "cells": [
+    {
+      "classNames": {
+        "cell": "junipervcpe"
+      },
+      "children": [
+        {
+          "label": "Placement",
+          "children": [
+            {
+              "model": "domainId",
+              "label": "vCPE Resource Domain",
+              "description": "Please select the resource Domain to host this vCPE.",
+              "renderer": {
+                "name": "select",
+                "options": {
+                  "modelType": "domains",
+                  "query": {
+                    "p": "",
+                    "q": "domainType:urn:cyaninc:bp:domain:firefly",
+                    "domainId": ""
+                  }
+                }
+              }
+            },
+            {
+              "model": "accessIp",
+              "label": "",
+              "description": "",
+              "transforms": {
+                "write": [
+                  {
+                    "object": {
+                      "id": "${id}",
+                      "something": "literal",
+                      "label": "${label}"
+                    }
+                  }
+                ],
+                "read": [
+                  {
+                    "from": "\n",
+                    "to": ",",
+                    "global": true
+                  }
+                ]
+              }
+            },
+            {
+              "model": "netConfPort",
+              "label": "",
+              "description": ""
+            },
+            {
+              "model": "userName",
+              "label": "",
+              "description": ""
+            },
+            {
+              "model": "password",
+              "label": "",
+              "description": ""
+            }
+          ]
+        },
+        {
+          "label": "Interfaces",
+          "children": [
+            {
+              "model": "interfaces",
+              "label": "Network Interfaces",
+              "description": "",
+              "collapsible": true,
+              "children": [
+                {
+                  "model": "interfaces",
+                  "label": "Logical Interfaces",
+                  "description": ""
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "label": "Routing",
+          "children": [
+            {
+              "model": "staticRouting",
+              "label": "Enable Static Route",
+              "description": "",
+              "collapsible": true,
+              "children": [
+                {
+                  "model": "staticRouting",
+                  "label": "Static Route",
+                  "description": ""
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "label": "Firewall",
+          "children": [
+            {
+              "model": "firewall",
+              "label": "Enable Firewall",
+              "description": "",
+              "collapsible": true,
+              "children": [
+                {
+                  "model": "firewall.securityPolicies",
+                  "label": "Security Policies",
+                  "description": "Please enter the firewall policies, one per line, \n in the form of <fromZone> <toZone> <service> <sourcePrefix> <destinationPrefix> <action> <protocol> <from_port> <to_port>"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
