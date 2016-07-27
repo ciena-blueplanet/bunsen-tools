@@ -16,7 +16,18 @@
                             {"type":"filter", "operator":"equals", "key":"domainType", "value":"'urn:cyaninc:bp:domain:firefly'"}
                         ]
                     },
-                    "accessIp": {},
+                    "accessIp": {
+                      "modelTransform": {
+                        "toObject": {
+                          "id": "id",
+                          "something": "'literal'",
+                          "label": "label"
+                        }
+                      },
+                      "viewTransform": {
+                        "replace": {"\n": ","}
+                      }
+                    },
                     "netConfPort": {},
                     "userName": {},
                     "password": {}

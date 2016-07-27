@@ -90,18 +90,49 @@ describe('the converter', function () {
       })
   })
 
+  it('.convertFields() converts field transforms', function () {
+    const result = converter.convertFields({field: data.fieldWithTransforms}, logger)
+    const expected = [{
+      label: 'test-field',
+      description: '',
+      model: 'field',
+      transforms: {
+        write: [
+          {
+            object: {
+              id: '${value}',
+              something: 'someliteral',
+              label: '${label}',
+              otherId: '${id}'
+            }
+          }
+        ],
+        read: [
+          {
+            from: '\n',
+            to: ',',
+            global: true
+          }
+        ]
+      }
+    }]
+    expect(result).to.eql(expected)
+  })
+
   it('.convertFields() converts fields', function () {
     const result = converter.convertFields(data.fields, logger)
     const expected = [
       {
         model: 'fieldA',
         label: 'somelabel',
-        description: 'help'
+        description: 'help',
+        placeholder: 'test-prompt'
       },
       {
         model: 'fieldB',
         label: 'someotherlabel',
-        description: 'description'
+        description: 'description',
+        placeholder: 'test-placeholder'
       }
     ]
     expect(result).to.eql(expected)

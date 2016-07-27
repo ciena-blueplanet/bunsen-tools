@@ -2,11 +2,28 @@ module.exports = {
   fields: {
     fieldA: {
       label: 'somelabel',
-      help: 'help'
+      help: 'help',
+      prompt: 'test-prompt'
     },
     fieldB: {
       label: 'someotherlabel',
-      description: 'description'
+      description: 'description',
+      placeholder: 'test-placeholder'
+    }
+  },
+  fieldWithTransforms: {
+    label: 'test-field',
+    type: 'string',
+    modelTransform: {
+      toObject: {
+        id: 'value',
+        something: '\'someliteral\'',
+        label: 'label',
+        otherId: 'id'
+      }
+    },
+    viewTransform: {
+      replace: {'\n': ','}
     }
   },
   fieldWithInstructions: {
