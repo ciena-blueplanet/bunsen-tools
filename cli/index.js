@@ -14,8 +14,9 @@ import {fillString} from '../assets/strings'
 import 'colors'
 import packageInfo from '../package.json'
 
-export function watch (file, callback) {
-  if (commander.watch) {
+export function watch (file, callback, watching) {
+  console.log('watching')
+  if (watching) {
     fs.watch(file, {encoding: 'buffer'}, callback)
   }
 }
@@ -47,12 +48,13 @@ export function converter (inFile, outFile, logger) {
         })
     })
     .then((uis2View) => {
-      console.log(uis2View)
       return fsp.writeFile(outFile, JSON.stringify(uis2View, null, 2))
     })      
     .then((result) => {
+      console.log(result)
       logger.log(JSON.stringify(result, null, 2))
       logger.success(fillString('conversion.onConverted', [inFile, outFile.green]))
+      return result
     })
     .catch((error) => {
       logger.error(error)
@@ -62,10 +64,6 @@ export function converter (inFile, outFile, logger) {
 }
 
 export function validator (inFile, optionalFile, logger) {
-  if (!inFile) {
-    logger.warn('no input file specified')
-    return
-  }
   validate(inFile, optionalFile, logger)
     .then((results) => {
       logger.log(JSON.stringify(results[0], null, 2))
@@ -77,7 +75,7 @@ export function validator (inFile, optionalFile, logger) {
   logger.print(fillString('validation.onValidating', [inFile.cyan]))
 }
 
-export function validateAction (logger, inFile, optionalFile) {
+export function validateAction (logger, watching, inFile, optionalFile) {
   if (!inFile) {
     logger.warn('no input file specified')
     return
@@ -86,10 +84,10 @@ export function validateAction (logger, inFile, optionalFile) {
   watch(inFile, (eventType, filename) => {
     logger.print(fillString('validation.onChangeObserved', [inFile]))
     validator(inFile, optionalFile, logger)
-  })
+  }, watching)
 }
 
-export function convertAction (logger, inFile, outFile) {
+export function convertAction (logger, watching, inFile, outFile) {
   if (!inFile) {
     logger.warn('no input file specified')
     return
@@ -97,7 +95,7 @@ export function convertAction (logger, inFile, outFile) {
   converter(inFile, outFile, logger)
   watch(inFile, (eventType, filename) => {
     convert(inFile, outFile, logger)
-  })
+  }, watching)
 }
 
 export function startBunsen (commander, processHandle, convertHandler, validateHandler, logger, version) {
@@ -112,7 +110,7 @@ export function startBunsen (commander, processHandle, convertHandler, validateH
     .option('-w, --watch', 'watch file for changes')
     .usage('[options] <legacyViewFile> [outputFilePath]')
     .arguments('<legacyViewFile> [viewFile]')
-    .action(_.bind(convertHandler, null, logger))
+    .action(_.bind(convertHandler, null, logger, commander.watch))
 
   commander
     .command('validate')
@@ -123,7 +121,7 @@ export function startBunsen (commander, processHandle, convertHandler, validateH
     .usage('[options] <viewFile>')
     .usage('[options] <modelFile> [viewFile]')
     .arguments('<modelOrViewFile> [viewFile]')
-    .action(_.bind(validateHandler, null, logger))
+    .action(_.bind(validateHandler, null, logger, commander.watch))
 
   commander.parse(processHandle.argv)
   logger.verbose = commander.verbose

@@ -8,8 +8,11 @@ var cli = require('../bin/index')
 var Logger = require('../lib/logger')
 var sinon = require('sinon')
 var fs = require('fs')
+var fsp = require('fs-promise')
 var commander = require('commander')
 var utils = require('../lib/utils')
+var uis1Converter = require('../lib/converter-uis1')
+var bv1Converter = require('../lib/converter-bv1')
 
 describe('the cli', function () {
   let logger = new Logger(false)
@@ -20,6 +23,11 @@ describe('the cli', function () {
     sinon.stub(cli, 'convertAction')
     sinon.stub(logger, 'warn')
     sinon.stub(logger, 'error')
+    sinon.stub(fsp, 'writeFile').returns(Promise.resolve({}))
+    sinon.stub(fsp, 'readFile').returns(Promise.resolve('yup'))
+    sinon.stub(uis1Converter, 'convert').returns(Promise.resolve('yeah'))
+    sinon.stub(bv1Converter, 'convert').returns(Promise.resolve('yeah'))
+    sinon.stub(utils, 'getLegacyViewType').returns(Promise.resolve('uis1'))
     sinon.stub(utils, 'parseJSON').returns(Promise.reject('someerror'))
     sinon.stub(logger, 'print')
     sinon.stub(logger, 'success')
@@ -30,6 +38,7 @@ describe('the cli', function () {
     fs.watch.restore()
     if (cli.validateAction.restore) cli.validateAction.restore()
     if (cli.convertAction.restore) cli.convertAction.restore()
+    if (cli.validator.restore) cli.validator.restore()
     if (cli.converter.restore) cli.converter.restore()
     logger.warn.restore()
     logger.log.restore()
@@ -37,6 +46,19 @@ describe('the cli', function () {
     logger.error.restore()
     logger.print.restore()
     logger.success.restore()
+    uis1Converter.convert.restore()
+    bv1Converter.convert.restore()
+    utils.getLegacyViewType.restore()
+    fsp.writeFile.restore()
+    fsp.readFile.restore()
+  })
+
+  it('.watch() watches', function () {
+    const file = 'somefile'
+    const callback = sinon.spy()
+    cli.watch(file, callback, true)
+    expect(fs.watch.called).to.be.ok
+    expect(fs.watch.lastCall.args).to.eql([file, {encoding: 'buffer'}, callback])
   })
 
   it('has the right arguments', function () {
@@ -71,14 +93,6 @@ describe('the cli', function () {
     expect(cmdr.args[2].watch).to.be.ok
   })
 
-  it('.converter() bails if no file specified', function () {
-    cli.convertAction.restore()
-    sinon.stub(cli, 'converter')
-    const processMock = {argv: ['', '', 'convert', 'something']}
-    const cmdr = cli.startBunsen(commander, processMock, cli.validateAction, cli.convertAction, logger, '1.1.1')
-    expect(cli.converter.called).not.to.be.ok
-  })
-
   it('has options set', function () {
     const processMock = {argv: ['', '', 'validate', 'somearg', 'someotherarg', '-v', '-w']}
     const cmdr = cli.startBunsen(commander, processMock, cli.validateAction, cli.convertAction, logger, '1.1.1')
@@ -86,18 +100,25 @@ describe('the cli', function () {
     expect(cmdr.args[2].watch).to.be.ok
   })
 
+  it.only('.converter() works', function () {
+    console.log(cli.converter)
+    utils.parseJSON.returns(Promise.resolve('great'))
+    return cli.converter('somefile', 'someoutfile', logger)
+      .then((result) => {
+        expect(result).to.be.ok
+      })
+  })
+
   it('.converter() bails if no file specified', function () {
     cli.convertAction.restore()
-    sinon.stub(cli, 'converter')
     const cmdr = cli.convertAction(logger, undefined, undefined)
     expect(logger.warn.called).to.be.ok
     expect(cli.converter.called).not.to.be.ok
   })
 
-  it('.validator() bails if no file specified', function () {
+  it('.validateAction() bails if no file specified', function () {
     cli.validateAction.restore()
-    sinon.stub(cli, 'validator')
-    const cmdr = cli.validateAction(logger, undefined, undefined)
+    const cmdr = cli.validateAction(logger, false, undefined, undefined)
     expect(logger.warn.called).to.be.ok
     expect(cli.validator.called).not.to.be.ok
   })

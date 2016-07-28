@@ -1,9 +1,10 @@
 import _ from 'lodash'
 
 export function transformString (uis1Transform) {
+  const key = _.keys(uis1Transform)[0]
   const uis2Transform = {
-    from: _.keys(uis1Transform)[0],
-    to: uis1Transform[_.keys(uis1Transform)[0]],
+    from: key,
+    to: uis1Transform[key],
     global: true
   }
   return uis2Transform

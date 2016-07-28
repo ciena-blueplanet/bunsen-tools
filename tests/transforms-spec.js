@@ -5,8 +5,7 @@
 var expect = require('chai').expect
 var transforms = require('../lib/transforms')
 var Logger = require('../lib/logger')
-// var sinon = require('sinon')
-// var Promise = require('promise')
+var _ = require('lodash')
 
 describe('transforms', function () {
   let logger
@@ -32,7 +31,7 @@ describe('transforms', function () {
         replace: {'\n': ','}
       }
     }
-    const expected = {
+    let expected = {
       transforms: {
         write: [
           {
@@ -54,6 +53,39 @@ describe('transforms', function () {
       }
     }
     expect(transforms.setTransforms({}, field, logger)).to.eql(expected)
+
+    const toObject = _.cloneDeep(field.modelTransform.toObject)
+    const replace = _.cloneDeep(field.viewTransform.replace)
+    const flippedField = {
+      viewTransform: {
+        toObject: toObject
+      },
+      modelTransform: {
+        replace: replace
+      }
+    }
+    expected = {
+      transforms: {
+        read: [
+          {
+            object: {
+              id: '${value}',
+              something: 'someliteral',
+              label: '${label}',
+              otherId: '${id}'
+            }
+          }
+        ],
+        write: [
+          {
+            from: '\n',
+            to: ',',
+            global: true
+          }
+        ]
+      }
+    }
+    expect(transforms.setTransforms({}, flippedField, logger)).to.eql(expected)
   })
 
   it('.transformObject() converts object transforms', function () {
