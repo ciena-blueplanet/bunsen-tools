@@ -6,6 +6,7 @@ var utils = require('../lib/utils')
 var fsp = require('fs-promise')
 var sinon = require('sinon')
 var Promise = require('promise')
+var strings = require('../assets/strings')
 
 describe('utils', function () {
   it('checks if a file is a view file or not', function () {
@@ -31,7 +32,7 @@ describe('utils', function () {
   it('promisizes a jsonParse fail', function () {
     return utils.parseJSON('"0')
      .catch((err) => {
-       expect(err[1]).to.eql('JSON failed to parse')
+       expect(err).to.eql(strings.strings.conversion.errors.invalidJson)
      })
   })
 
@@ -42,6 +43,26 @@ describe('utils', function () {
      })
   })
 
+  describe('.getLegacyViewType(view)', function () {
+    it('determines bv1 type', function () {
+      return utils.getLegacyViewType({type: 'form'})
+        .then((result) => {
+          expect(result).to.eql('bv1')
+        })
+    })
+    it('determines uis1 type', function () {
+      return utils.getLegacyViewType({'onea.theseCrazy.things': {}})
+        .then((result) => {
+          expect(result).to.eql('uis1')
+        })
+    })
+    it('rejects if neither', function () {
+      return utils.getLegacyViewType({})
+        .catch((error) => {
+          expect(error).to.eql(strings.strings.conversion.errors.noViewType)
+        })
+    })
+  })
   it('reads a file', function () {
     return utils.readFile('tests/models/fragment.json').then((results) => {
       expect(results).to.be.ok
