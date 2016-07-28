@@ -100,7 +100,7 @@ describe('the cli', function () {
     expect(cmdr.args[2].watch).to.be.ok
   })
 
-  it.only('.converter() works', function () {
+  it('.converter() works', function () {
     console.log(cli.converter)
     utils.parseJSON.returns(Promise.resolve('great'))
     return cli.converter('somefile', 'someoutfile', logger)
