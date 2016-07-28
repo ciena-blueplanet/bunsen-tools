@@ -9,6 +9,7 @@ var Logger = require('../lib/logger')
 var sinon = require('sinon')
 var fs = require('fs')
 var commander = require('commander')
+var EventEmitter = require('events').EventEmitter
 
 describe('the cli', function () {
   let logger = new Logger(false)
@@ -24,7 +25,16 @@ describe('the cli', function () {
     fs.watch.restore()
     if (cli.validateAction.restore) cli.validateAction.restore()
     if (cli.convertAction.restore) cli.convertAction.restore()
+    if (cli.validator.restore) cli.validator.restore()
     logger.warn.restore()
+  })
+
+  it('.watch() watches', function () {
+    const file = 'somefile'
+    const callback = sinon.spy()
+    cli.watch(file, callback, true)
+    expect(fs.watch.called).to.be.ok
+    expect(fs.watch.lastCall.args).to.eql([file, {encoding: 'buffer'}, callback])
   })
 
   it('has the right arguments', function () {
@@ -60,10 +70,9 @@ describe('the cli', function () {
     expect(cli.converter.called).not.to.be.ok
   })
 
-  it('.validator() bails if no file specified', function () {
+  it('.validateAction() bails if no file specified', function () {
     cli.validateAction.restore()
-    sinon.stub(cli, 'validator')
-    const cmdr = cli.validateAction(logger, undefined, undefined)
+    const cmdr = cli.validateAction(logger, false, undefined, undefined)
     expect(logger.warn.called).to.be.ok
     expect(cli.validator.called).not.to.be.ok
   })
