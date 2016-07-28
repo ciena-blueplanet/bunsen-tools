@@ -1,3 +1,6 @@
+# 1.3.0
+- adds support for converting BV1 to UIS2
+
 # 1.2.0
 - now supports converting UI Schema transforms to UI Schema 2 transforms
 - has cli test coverage
