@@ -174,6 +174,33 @@ describe('the converter', function () {
     expect(result).to.eql(expected)
   })
 
+  it.only('.convertArrays() converts objectArrays into array fields', function () {
+    const objArray = {
+      type: 'objectarray',
+      description: 'some description',
+      label: 'some label',
+      order: 'field1,field2,field3,field4' 
+    }
+
+    const arrayOptions = {
+      autoAdd: true,
+      compact: true,
+      itemCell: {
+        children: [
+          { model: 'field1' },
+          { model: 'field2' },
+          { model: 'field3' },
+          { model: 'field4' }
+        ]
+      },
+      showLabel: false,
+      sortable: true
+    }
+
+    const result = converter.convertObjectArray(objArray, logger)
+    expect(result).to.eql(arrayOptions)
+  })
+
   it('.convertSchema() converts a schema', function () {
     return converter.convertSchema(data.uiSchema1, logger)
       .then((result) => {
@@ -181,3 +208,4 @@ describe('the converter', function () {
       })
   })
 })
+

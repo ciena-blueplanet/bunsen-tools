@@ -86,6 +86,9 @@ export function convertFields (fields, logger) {
       label: field.label || '',
       description: field.description || field.help || ''
     }
+    if (field.type === 'objectarray') {
+      newField.arrayOptions = convertObjectArray(logger)
+    }
     const placeholder = field.placeholder || field.prompt
     if (placeholder) _.extend(newField, {placeholder})
     setTransforms(newField, field, logger)
@@ -93,3 +96,19 @@ export function convertFields (fields, logger) {
     return result
   })
 }
+
+export function convertObjectArray (field, logger) {
+  logger.log('converting object array')
+  return {
+    autoAdd: true,
+    compact: true,
+    itemCell: {
+      children: _.map(field.order.split(','), (prop) => {
+        return { model: prop }
+      })
+    },
+    showLabel: false,
+    sortable: true
+  }
+}
+
