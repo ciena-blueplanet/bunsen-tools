@@ -7,6 +7,7 @@ import {setTransforms} from './transforms'
 export function convert (uis1, outfile, logger) {
   return convertSchema(uis1, logger)
     .then((uis2) => {
+      logger.log(uis2)
       return wrapSchema(uis2, logger)
     })
     .then((uis2) => {
@@ -87,7 +88,8 @@ export function convertFields (fields, logger) {
       description: field.description || field.help || ''
     }
     if (field.type === 'objectarray') {
-      newField.arrayOptions = convertObjectArray(logger)
+      newField.arrayOptions = convertObjectArray(field, logger)
+      logger.log(newField.arrayOptions)
     }
     const placeholder = field.placeholder || field.prompt
     if (placeholder) _.extend(newField, {placeholder})
@@ -98,17 +100,19 @@ export function convertFields (fields, logger) {
 }
 
 export function convertObjectArray (field, logger) {
-  logger.log('converting object array')
-  return {
+  const result = {
     autoAdd: true,
     compact: true,
-    itemCell: {
-      children: _.map(field.order.split(','), (prop) => {
-        return { model: prop }
-      })
-    },
     showLabel: false,
     sortable: true
   }
+  if (field.order) {
+    result.itemCell = {
+      children: _.map(field.order.split(','), (prop) => {
+        return { model: prop }
+      })
+    }
+  }
+  return result
 }
 

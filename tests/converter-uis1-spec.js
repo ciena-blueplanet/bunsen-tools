@@ -174,12 +174,12 @@ describe('the converter', function () {
     expect(result).to.eql(expected)
   })
 
-  it.only('.convertArrays() converts objectArrays into array fields', function () {
+  it('.convertArrays() converts objectArrays into array fields', function () {
     const objArray = {
       type: 'objectarray',
       description: 'some description',
       label: 'some label',
-      order: 'field1,field2,field3,field4' 
+      order: 'field1,field2,field3,field4'
     }
 
     const arrayOptions = {

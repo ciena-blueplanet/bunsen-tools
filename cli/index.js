@@ -15,8 +15,8 @@ import 'colors'
 import packageInfo from '../package.json'
 
 export function watch (file, callback, watching) {
-  console.log('watching')
   if (watching) {
+    console.log('watching')
     fs.watch(file, {encoding: 'buffer'}, callback)
   }
 }
@@ -99,17 +99,18 @@ export function convertAction (logger, watching, inFile, outFile) {
 }
 
 export function startBunsen (commander, processHandle, convertHandler, validateHandler, logger, version) {
+
   commander
     .version(version)
-
+  
   commander
     .command('convert')
     .alias('c')
     .description('convert old view formats into UI Schema 2')
-    .option('-v, --verbose', 'more output')
-    .option('-w, --watch', 'watch file for changes')
     .usage('[options] <legacyViewFile> [outputFilePath]')
     .arguments('<legacyViewFile> [viewFile]')
+    .option('-v, --verbose', 'more output')
+    .option('-w, --watch', 'watch file for changes')
     .action(_.bind(convertHandler, null, logger, commander.watch))
 
   commander
@@ -125,8 +126,8 @@ export function startBunsen (commander, processHandle, convertHandler, validateH
 
   commander.parse(processHandle.argv)
   logger.verbose = commander.verbose
-
   return commander
+
 }
 
 let logger = new Logger()
