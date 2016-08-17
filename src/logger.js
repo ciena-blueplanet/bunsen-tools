@@ -1,6 +1,7 @@
 require('colors')
 
 module.exports = function (verbose) {
+  
   this.verbose = verbose
   this.log = (msg) => {
     if (this.verbose) {

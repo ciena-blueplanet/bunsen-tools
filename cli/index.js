@@ -16,7 +16,6 @@ import packageInfo from '../package.json'
 
 export function watch (file, callback, watching) {
   if (watching) {
-    console.log('watching')
     fs.watch(file, {encoding: 'buffer'}, callback)
   }
 }
@@ -51,7 +50,6 @@ export function converter (inFile, outFile, logger) {
       return fsp.writeFile(outFile, JSON.stringify(uis2View, null, 2))
     })      
     .then((result) => {
-      console.log(result)
       logger.log(JSON.stringify(result, null, 2))
       logger.success(fillString('conversion.onConverted', [inFile, outFile.green]))
       return result
@@ -75,7 +73,8 @@ export function validator (inFile, optionalFile, logger) {
   logger.print(fillString('validation.onValidating', [inFile.cyan]))
 }
 
-export function validateAction (logger, watching, inFile, optionalFile) {
+export function validateAction (inFile, optionalFile, options) {
+  let logger = new Logger(options.verbose)
   if (!inFile) {
     logger.warn('no input file specified')
     return
@@ -84,10 +83,11 @@ export function validateAction (logger, watching, inFile, optionalFile) {
   watch(inFile, (eventType, filename) => {
     logger.print(fillString('validation.onChangeObserved', [inFile]))
     validator(inFile, optionalFile, logger)
-  }, watching)
+  }, options.watching)
 }
 
-export function convertAction (logger, watching, inFile, outFile) {
+export function convertAction (inFile, outFile, options) {
+  let logger = new Logger(options.verbose)
   if (!inFile) {
     logger.warn('no input file specified')
     return
@@ -95,48 +95,43 @@ export function convertAction (logger, watching, inFile, outFile) {
   converter(inFile, outFile, logger)
   watch(inFile, (eventType, filename) => {
     convert(inFile, outFile, logger)
-  }, watching)
+  }, options.watching)
+
 }
 
-export function startBunsen (commander, processHandle, convertHandler, validateHandler, logger, version) {
+export function startBunsen (commander, processHandle, convertHandler, validateHandler, version) {
 
   commander
     .version(version)
   
   commander
     .command('convert')
-    .alias('c')
     .description('convert old view formats into UI Schema 2')
     .usage('[options] <legacyViewFile> [outputFilePath]')
     .arguments('<legacyViewFile> [viewFile]')
     .option('-v, --verbose', 'more output')
     .option('-w, --watch', 'watch file for changes')
-    .action(_.bind(convertHandler, null, logger, commander.watch))
+    .action(_.bind(convertHandler, commander))
 
   commander
     .command('validate')
-    .alias('v')
     .description('validate a Bunsen Model or View, or validate a Bunsen View against a Bunsen Model')
     .option('-v, --verbose', 'more output')
     .option('-w, --watch', 'watch file for changes')
     .usage('[options] <viewFile>')
     .usage('[options] <modelFile> [viewFile]')
     .arguments('<modelOrViewFile> [viewFile]')
-    .action(_.bind(validateHandler, null, logger, commander.watch))
+    .action(_.bind(validateHandler, commander))
 
   commander.parse(processHandle.argv)
-  logger.verbose = commander.verbose
   return commander
-
 }
 
-let logger = new Logger()
 
 startBunsen(
   commander,
   process,
   convertAction,
   validateAction,
-  logger,
   packageInfo.version
 )
