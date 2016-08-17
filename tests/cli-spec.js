@@ -117,7 +117,7 @@ describe('the cli', function () {
 
   it('.validateAction() bails if no file specified', function () {
     cli.validateAction.restore()
-    const cmdr = cli.validateAction(undefined, undefined, {verbose: true, watch: false}) 
+    const cmdr = cli.validateAction(undefined, undefined, {verbose: true, watch: false})
     expect(cli.validator.called).not.to.be.ok
   })
 })
