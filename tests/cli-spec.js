@@ -63,19 +63,19 @@ describe('the cli', function () {
 
   it('has the right arguments', function () {
     const processMock = {argv: ['', '', 'validate', 'someotherarg']}
-    const cmdr = cli.startBunsen(commander, processMock, cli.validateAction, cli.convertAction, logger, '1.1.1')
+    const cmdr = cli.startBunsen(commander, processMock, cli.validateAction, cli.convertAction, '1.1.1')
     expect(cmdr.rawArgs).to.eql(processMock.argv)
   })
 
   it('calls validate when told', function () {
     const processMock = {argv: ['', '', 'validate', 'someotherarg']}
-    const cmdr = cli.startBunsen(commander, processMock, cli.validateAction, cli.convertAction, logger, '1.1.1')
+    const cmdr = cli.startBunsen(commander, processMock, cli.validateAction, cli.convertAction, '1.1.1')
     expect(cli.validateAction.called).not.to.be.ok
   })
 
   it('calls convert when told', function () {
     const processMock = {argv: ['', '', 'convert', 'someotherarg']}
-    const cmdr = cli.startBunsen(commander, processMock, cli.validateAction, cli.convertAction, logger, '1.1.1')
+    const cmdr = cli.startBunsen(commander, processMock, cli.validateAction, cli.convertAction, '1.1.1')
     expect(cli.convertAction.called).not.to.be.ok
   })
 
@@ -111,15 +111,14 @@ describe('the cli', function () {
 
   it('.converter() bails if no file specified', function () {
     cli.convertAction.restore()
-    const cmdr = cli.convertAction(logger, undefined, undefined)
-    expect(logger.warn.called).to.be.ok
+    const cmdr = cli.convertAction(undefined, undefined, {verbose: true, watch: false})
     expect(cli.converter.called).not.to.be.ok
   })
 
   it('.validateAction() bails if no file specified', function () {
     cli.validateAction.restore()
-    const cmdr = cli.validateAction(logger, false, undefined, undefined)
-    expect(logger.warn.called).to.be.ok
+    const cmdr = cli.validateAction(undefined, undefined, {verbose: true, watch: false})
     expect(cli.validator.called).not.to.be.ok
   })
 })
+
