@@ -14,7 +14,7 @@ export function transformObject (uis1Transform) {
   const keywords = ['value', 'id', 'label']
   return {
     object: _.reduce(uis1Transform, (result, value, key) => {
-      if (value.split('\'').length === 3) {
+      if (value && value.split && value.split('\'').length === 3) {
         value = value.split('\'')[1]
       }
       if (_.indexOf(keywords, value) !== -1) {

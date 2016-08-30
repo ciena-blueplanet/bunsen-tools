@@ -83,7 +83,7 @@ describe('the converter', function () {
     const expected = [{
       label: 'test-field',
       description: '',
-      model: 'field',
+      model: 'properties.field',
       transforms: {
         write: [
           {
@@ -111,13 +111,13 @@ describe('the converter', function () {
     const result = converter.convertFields(data.fields, logger)
     const expected = [
       {
-        model: 'fieldA',
+        model: 'properties.fieldA',
         label: 'somelabel',
         description: 'help',
         placeholder: 'test-prompt'
       },
       {
-        model: 'fieldB',
+        model: 'properties.fieldB',
         label: 'someotherlabel',
         description: 'description',
         placeholder: 'test-placeholder'
@@ -132,15 +132,15 @@ describe('the converter', function () {
         {
           label: 'somename',
           children: [
-            { model: 'somefield', description: '', label: '' },
-            { model: 'someotherfield', description: '', label: '' },
+            { model: 'properties.somefield', description: '', label: '' },
+            { model: 'properties.someotherfield', description: '', label: '' },
             {
-              model: 'somefieldset',
+              model: 'properties.somefieldset',
               collapsible: true,
               description: '',
               label: '',
               children: [
-                { model: 'somefieldset_field', description: '', label: '' }
+                { model: 'properties.somefieldset_field', description: '', label: '' }
               ]
             }
           ]
@@ -156,18 +156,18 @@ describe('the converter', function () {
   it('.convertFieldsets() converts fieldsets', function () {
     const expected = [
       {
-        model: 'fieldSetA',
+        model: 'properties.fieldSetA',
         label: 'Alabel',
         description: 'Ahelp',
         collapsible: true,
-        children: [ {model: 'cellA', label: 'cellAlabel', description: ''} ]
+        children: [ {model: 'properties.cellA', label: 'cellAlabel', description: ''} ]
       },
       {
-        model: 'fieldSetB',
+        model: 'properties.fieldSetB',
         label: 'Blabel',
         description: 'Bdescription',
         collapsible: true,
-        children: [ {model: 'cellB', label: 'cellBlabel', description: ''} ]
+        children: [ {model: 'properties.cellB', label: 'cellBlabel', description: ''} ]
       }
     ]
     const result = converter.convertFieldsets(data.fieldsets, logger)
@@ -187,10 +187,10 @@ describe('the converter', function () {
       compact: true,
       itemCell: {
         children: [
-          { model: 'field1' },
-          { model: 'field2' },
-          { model: 'field3' },
-          { model: 'field4' }
+          { model: 'properties.field1' },
+          { model: 'properties.field2' },
+          { model: 'properties.field3' },
+          { model: 'properties.field4' }
         ]
       },
       showLabel: false,
@@ -208,4 +208,3 @@ describe('the converter', function () {
       })
   })
 })
-

@@ -11,6 +11,7 @@ export function convert (uis1, outfile, logger) {
       return wrapSchema(uis2, logger)
     })
     .then((uis2) => {
+      logger.log(JSON.stringify(uis2, null, 2))
       logger.log('attempting to validate view')
       return validateView(uis2, logger)
         .then((result) => {
@@ -70,10 +71,10 @@ export function convertFieldsets (fieldsets, logger) {
   return _.map(fieldsets, (fieldset, key) => {
     logger.log('key: ' + key)
     return {
-      model: key.split('_').join(''),
+      model: `properties.${key.split('_').join('')}`,
       label: fieldset.label || '',
       description: fieldset.description || fieldset.help || '',
-      collapsible: fieldset['switch'] || true,
+      collapsible: !!fieldset['switch'] || true,
       children: convertFields(fieldset.fields, logger)
     }
   })
@@ -83,13 +84,12 @@ export function convertFields (fields, logger) {
   logger.log('converting fields...')
   return _.map(fields, (field, key) => {
     const newField = {
-      model: key,
+      model: `properties.${key}`,
       label: field.label || '',
       description: field.description || field.help || ''
     }
     if (field.type === 'objectarray') {
       newField.arrayOptions = convertObjectArray(field, logger)
-      logger.log(newField.arrayOptions)
     }
     const placeholder = field.placeholder || field.prompt
     if (placeholder) _.extend(newField, {placeholder})
@@ -109,7 +109,7 @@ export function convertObjectArray (field, logger) {
   if (field.order) {
     result.itemCell = {
       children: _.map(field.order.split(','), (prop) => {
-        return { model: prop }
+        return { model: `properties.${prop}` }
       })
     }
   }

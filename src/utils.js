@@ -32,7 +32,7 @@ export function writeFile (outfile, data) {
   })
 }
 
-export function getDefaultOutputPath (inputPath) {
+export function getDefaultOutputPath (inputPath = '') {
   return `${inputPath.split('.')[0]}-uis2.json`
 }
 

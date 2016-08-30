@@ -39,7 +39,7 @@ export function convertInstructions (field, logger) {
 
 export function getInstructorValue (inst, field) {
   let value = '${' + inst.value + '}'
-  if (inst.value.split('\'').length === 3) {
+  if (inst.value && inst.value.split && inst.value.split('\'').length === 3) {
     value = inst.value.split('\'')[1]
   }
   if (inst.value === 'instructor') {
@@ -53,16 +53,17 @@ export function getInstructorValue (inst, field) {
 
 export function setModelType (options, field) {
   if (field.resourceType) {
+    if (field.resourceType.split('.').length === 3) {
+      options.modelType = 'resource'
+      return
+    }
     options.modelType = field.resourceType
-  }
-  if (field.resourceType.split('.').length === 3) {
-    options.modelType = 'resource'
   }
 }
 
 export function setQuery (options, field, logger) {
   const query = {}
-  if (field.resourceType.split('.').length === 3) {
+  if (field.resourceType && field.resourceType.split('.').length === 3) {
     _.extend(query, {resourceTypeId: field.resourceType})
   }
   if (field.instructions) {
@@ -102,7 +103,7 @@ export function setRendererOptions (renderer, uis1Field, logger) {
   setModelType(options, uis1Field)
   smartSet(options, 'valueAttribute', uis1Field)
   smartSet(options, 'labelAttribute', uis1Field)
-  setQuery(options, uis1Field)
+  setQuery(options, uis1Field, logger)
   if (!_.isEmpty(options)) {
     renderer.options = options
   }
