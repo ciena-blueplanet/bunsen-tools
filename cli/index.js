@@ -38,7 +38,7 @@ export function converter (inFile, outFile, logger) {
         .then((legacyViewType) => {
           switch (legacyViewType) {
             case 'uis1':
-            case 'uis1-domain-type': 
+            case 'uis1-domain-type':
               return convertUis1(legacyView, outFile, logger)
             case 'bv1':
               return convertBv1(legacyView, outFile, logger)
@@ -92,13 +92,11 @@ export function convertAction (inFile, outFile, options) {
   }
   converter(inFile, outFile, logger)
   watch(inFile, (eventType, filename) => {
-    convert(inFile, outFile, logger)
+    converter(inFile, outFile, logger)
   }, options.watching)
-
 }
 
 export function startBunsen (commander, processHandle, convertHandler, validateHandler, version) {
-
   commander
     .version(version)
 
@@ -124,7 +122,6 @@ export function startBunsen (commander, processHandle, convertHandler, validateH
   commander.parse(processHandle.argv)
   return commander
 }
-
 
 startBunsen(
   commander,
