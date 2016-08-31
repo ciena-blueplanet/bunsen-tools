@@ -38,6 +38,7 @@ export function converter (inFile, outFile, logger) {
         .then((legacyViewType) => {
           switch (legacyViewType) {
             case 'uis1':
+            case 'uis1-domain-type': 
               return convertUis1(legacyView, outFile, logger)
             case 'bv1':
               return convertBv1(legacyView, outFile, logger)

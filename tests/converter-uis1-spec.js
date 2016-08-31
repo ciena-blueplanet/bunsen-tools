@@ -42,7 +42,7 @@ describe('the converter', function () {
     })
 
     it('converts the schema', function () {
-      return converter.convert({foo: 'bar'}, 'someotherfile', logger)
+      return converter.convert({foo: {fields: []}}, 'someotherfile', logger)
         .then((result) => {
           expect(validateViewSpy.called).to.be.ok
         })
@@ -53,12 +53,7 @@ describe('the converter', function () {
     const expected = {
       type: 'form',
       version: '2.0',
-      cells: [
-        {
-          classNames: '',
-          children: []
-        }
-      ]
+      cells: []
     }
     return converter.wrapSchema({classNames: '', children: []})
       .then((result) => {

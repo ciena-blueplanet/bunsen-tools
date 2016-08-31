@@ -24,12 +24,7 @@ export function wrapSchema (uis2) {
   return Promise.resolve({
     type: 'form',
     version: '2.0',
-    cells: [
-      {
-        classNames: uis2.classNames,
-        children: uis2.children
-      }
-    ]
+    cells: uis2.children
   })
 }
 
@@ -37,7 +32,15 @@ export function convertSchema (ui1, logger) {
   const newObj = {}
   logger.log('converting...')
   return convertClassName(ui1, newObj, logger).then((ui2) => {
-    return convertFieldGroups(ui1, ui2, logger)
+    const key = _.keys(ui1)[0]
+    if (ui1[key].fieldGroups) {
+      return convertFieldGroups(ui1, ui2, logger)
+    }
+    if (ui1[key].fields) {
+      logger.log('found fields instead of fieldgroups')
+      ui2.children = convertFields(ui1[key].fields, logger)
+      return Promise.resolve(ui2)
+    }
   })
 }
 
@@ -115,4 +118,3 @@ export function convertObjectArray (field, logger) {
   }
   return result
 }
-

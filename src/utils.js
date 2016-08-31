@@ -43,5 +43,8 @@ export function getLegacyViewType (view) {
   if (_.keys(view)[0] && _.keys(view)[0].split('.').length === 3) {
     return Promise.resolve('uis1')
   }
+  if (_.keys(view)[0] && _.keys(view)[0].split(':').length > 3) {
+    return Promise.resolve('uis1-domain-type')
+  }
   return Promise.reject(strings.strings.conversion.errors.noViewType)
 }
