@@ -10,7 +10,7 @@
 
 ## Installation
 
-> Note: In order to use **bunsen-tools** you will need to have [Node](https://nodejs.org/en/download/package-manager/) installed.
+> Note: In order to use **bunsen-tools** you will need to have [Node 5.x](https://nodejs.org/en/download/package-manager/) installed, with NPM 3.x.
 
 Once you have Node installed you can run the following command to install **bunsen-tools**:
 
