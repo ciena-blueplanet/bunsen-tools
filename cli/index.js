@@ -38,17 +38,16 @@ export function converter (inFile, outFile, logger) {
         .then((legacyViewType) => {
           switch (legacyViewType) {
             case 'uis1':
+            case 'uis1-domain-type':
               return convertUis1(legacyView, outFile, logger)
-              break;
             case 'bv1':
-              console.log(convertBv1(legacyView, outFile, logger))
               return convertBv1(legacyView, outFile, logger)
-          } 
+          }
         })
     })
     .then((uis2View) => {
       return fsp.writeFile(outFile, JSON.stringify(uis2View, null, 2))
-    })      
+    })
     .then((result) => {
       logger.log(JSON.stringify(result, null, 2))
       logger.success(fillString('conversion.onConverted', [inFile, outFile.green]))
@@ -58,7 +57,6 @@ export function converter (inFile, outFile, logger) {
       logger.error(error)
       logger.error(`${inFile} failed to convert`)
     })
-  logger.print(fillString('conversion.onConverting', [inFile.cyan]))
 }
 
 export function validator (inFile, optionalFile, logger) {
@@ -94,16 +92,14 @@ export function convertAction (inFile, outFile, options) {
   }
   converter(inFile, outFile, logger)
   watch(inFile, (eventType, filename) => {
-    convert(inFile, outFile, logger)
+    converter(inFile, outFile, logger)
   }, options.watching)
-
 }
 
 export function startBunsen (commander, processHandle, convertHandler, validateHandler, version) {
-
   commander
     .version(version)
-  
+
   commander
     .command('convert')
     .description('convert old view formats into UI Schema 2')
@@ -126,7 +122,6 @@ export function startBunsen (commander, processHandle, convertHandler, validateH
   commander.parse(processHandle.argv)
   return commander
 }
-
 
 startBunsen(
   commander,

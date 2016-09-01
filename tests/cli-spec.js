@@ -90,14 +90,6 @@ describe('the cli', function () {
     const processMock = {argv: ['', '', 'validate', 'somearg', 'someotherarg', '-v', '-w']}
     const cmdr = cli.startBunsen(commander, processMock, cli.validateAction, cli.convertAction, logger, '1.1.1')
     expect(cmdr.args[2].verbose).to.be.ok
-    expect(cmdr.args[2].watch).to.be.ok
-  })
-
-  it('has options set', function () {
-    const processMock = {argv: ['', '', 'validate', 'somearg', 'someotherarg', '-v', '-w']}
-    const cmdr = cli.startBunsen(commander, processMock, cli.validateAction, cli.convertAction, logger, '1.1.1')
-    expect(cmdr.args[2].verbose).to.be.ok
-    expect(cmdr.args[2].watch).to.be.ok
   })
 
   it('.converter() works', function () {
@@ -121,4 +113,3 @@ describe('the cli', function () {
     expect(cli.validator.called).not.to.be.ok
   })
 })
-

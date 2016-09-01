@@ -48,15 +48,15 @@ module.exports = {
       {
         label: 'somename',
         children: [
-          { model: 'somefield', description: '', label: '' },
-          { model: 'someotherfield', description: '', label: '' },
+          { model: 'properties.somefield', description: '', label: '' },
+          { model: 'properties.someotherfield', description: '', label: '' },
           {
-            model: 'somefieldset',
+            model: 'properties.somefieldset',
             collapsible: true,
             description: '',
             label: '',
             children: [
-              { model: 'somefieldset_field', description: '', label: '' }
+              { model: 'properties.somefieldset_field', description: '', label: '' }
             ]
           }
         ]
