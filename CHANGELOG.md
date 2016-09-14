@@ -1,3 +1,7 @@
+# 1.6.0
+
+* **Added** general tab with label and description properties to converted schemas.
+
 # 1.5.4
 
 * Minor code cleanup and addition of JSDoc comments in source code.
