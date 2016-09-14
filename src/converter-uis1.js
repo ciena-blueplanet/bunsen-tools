@@ -88,8 +88,8 @@ export function convertFields (fields, logger) {
   return _.map(fields, (field, key) => {
     const newField = {
       model: `properties.${key}`,
-      label: field.label || '',
-      description: field.description || field.help || ''
+      label: _.get(field, 'label', ''),
+      description: _.get(field, 'description', field.help || '')
     }
     if (field.type === 'objectarray') {
       newField.arrayOptions = convertObjectArray(field, logger)
@@ -97,8 +97,7 @@ export function convertFields (fields, logger) {
     const placeholder = field.placeholder || field.prompt
     if (placeholder) _.extend(newField, {placeholder})
     setTransforms(newField, field, logger)
-    const result = setRenderer(newField, field, logger)
-    return result
+    return setRenderer(newField, field, logger)
   })
 }
 
