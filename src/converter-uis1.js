@@ -31,17 +31,29 @@ export function wrapSchema (uis2) {
 export function convertSchema (ui1, logger) {
   const newObj = {}
   logger.log('converting...')
-  return convertClassName(ui1, newObj, logger).then((ui2) => {
-    const key = _.keys(ui1)[0]
-    if (ui1[key].fieldGroups) {
-      return convertFieldGroups(ui1, ui2, logger)
-    }
-    if (ui1[key].fields) {
-      logger.log('found fields instead of fieldgroups')
-      ui2.children = convertFields(ui1[key].fields, logger)
-      return Promise.resolve(ui2)
-    }
-  })
+  return convertClassName(ui1, newObj, logger)
+    .then((ui2) => {
+      const key = _.keys(ui1)[0]
+      if (ui1[key].fieldGroups) {
+        return convertFieldGroups(ui1, ui2, logger)
+      }
+      if (ui1[key].fields) {
+        logger.log('found fields instead of fieldgroups')
+        ui2.children = convertFields(ui1[key].fields, logger)
+        return Promise.resolve(ui2)
+      }
+    })
+    .then((uis2) => {
+      uis2.children.splice(0, 0, {
+        children: [
+          {model: 'label'},
+          {model: 'description'}
+        ],
+        label: 'General'
+      })
+
+      return uis2
+    })
 }
 
 export function convertClassName (ui1, ui2, logger) {
