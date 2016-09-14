@@ -1,7 +1,16 @@
 require('colors')
 
 module.exports = function (verbose) {
+  /**
+ * Verbose flag
+ * @type {Boolean}
+ */
   this.verbose = verbose
+
+  /**
+   * Log message when verbose flag is enabled
+   * @param {String} msg - message to log
+   */
   this.log = (msg) => {
     if (this.verbose) {
       console.log(msg)
@@ -30,6 +39,10 @@ module.exports = function (verbose) {
     console.warn('WARNING: '.yellow + msg)
   }
 
+  /**
+   * Print message
+   * @param {String} msg - message to print
+   */
   this.print = (msg) => {
     console.log(msg)
   }
