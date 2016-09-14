@@ -46,6 +46,17 @@ module.exports = {
     },
     children: [
       {
+        children: [
+          {
+            model: 'label'
+          },
+          {
+            model: 'description'
+          }
+        ],
+        label: 'General'
+      },
+      {
         label: 'somename',
         children: [
           { model: 'properties.somefield', description: '', label: '' },
