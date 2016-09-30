@@ -85,13 +85,18 @@ export function convertFieldsets (fieldsets, logger) {
   logger.log('converting fieldsets')
   return _.map(fieldsets, (fieldset, key) => {
     logger.log('key: ' + key)
-    return {
+    const newFieldset = {
       model: `properties.${key.split('_').join('')}`,
-      label: fieldset.label || '',
-      description: fieldset.description || fieldset.help || '',
       collapsible: !!fieldset['switch'] || true,
       children: convertFields(fieldset.fields, logger)
     }
+    if (fieldset.label) {
+      newFieldset.label = fieldset.label
+    }
+    if (fieldset.help || fieldset.description) {
+      newFieldset.description = fieldset.help || fieldset.description
+    }
+    return newFieldset
   })
 }
 
@@ -99,12 +104,16 @@ export function convertFields (fields, logger) {
   logger.log('converting fields...')
   return _.map(fields, (field, key) => {
     const newField = {
-      model: `properties.${key}`,
-      label: _.get(field, 'label', ''),
-      description: _.get(field, 'description', field.help || '')
+      model: `properties.${key}`
     }
     if (field.type === 'objectarray') {
       newField.arrayOptions = convertObjectArray(field, logger)
+    }
+    if (field.label) {
+      newField.label = field.label
+    }
+    if (field.help || field.description) {
+      newField.description = field.help || field.description
     }
     const placeholder = field.placeholder || field.prompt
     if (placeholder) _.extend(newField, {placeholder})
