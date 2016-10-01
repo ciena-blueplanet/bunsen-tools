@@ -42,14 +42,26 @@ describe('the converter', function () {
     })
 
     it('converts the schema', function () {
-      return converter.convert({foo: {fields: []}}, 'someotherfile', logger)
+      return converter.convert({foo: {fields: []}}, 'someotherfile', {}, logger)
         .then((result) => {
           expect(validateViewSpy.called).to.be.ok
         })
     })
   })
 
-  it('.wrapsSchema() to give it the final shape', function () {
+  it('.wrapsSchema() to give it the final shape for a detail view', function () {
+    const expected = {
+      type: 'detail',
+      version: '2.0',
+      cells: []
+    }
+    return converter.wrapSchema({classNames: '', children: []}, true)
+      .then((result) => {
+        expect(result).to.eql(expected)
+      })
+  })
+
+  it('.wrapsSchema() to give it the final shape for a form view', function () {
     const expected = {
       type: 'form',
       version: '2.0',

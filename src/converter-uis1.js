@@ -4,11 +4,11 @@ import {validateView} from './validate'
 import {setRenderer} from './renderer'
 import {setTransforms} from './transforms'
 
-export function convert (uis1, outfile, logger) {
+export function convert (uis1, outfile, detail, logger) {
   return convertSchema(uis1, logger)
     .then((uis2) => {
       logger.log(uis2)
-      return wrapSchema(uis2, logger)
+      return wrapSchema(uis2, detail, logger)
     })
     .then((uis2) => {
       logger.log(JSON.stringify(uis2, null, 2))
@@ -20,9 +20,9 @@ export function convert (uis1, outfile, logger) {
     })
 }
 
-export function wrapSchema (uis2) {
+export function wrapSchema (uis2, detail) {
   return Promise.resolve({
-    type: 'form',
+    type: detail ? 'detail' : 'form',
     version: '2.0',
     cells: uis2.children
   })
