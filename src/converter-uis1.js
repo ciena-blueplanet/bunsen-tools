@@ -1,3 +1,4 @@
+/*eslint complexity:0 */
 import Promise from 'promise'
 import _ from 'lodash'
 import {validateView} from './validate'
@@ -5,7 +6,7 @@ import {setRenderer} from './renderer'
 import {setTransforms} from './transforms'
 
 export function convert (uis1, outfile, detail, logger) {
-  return convertSchema(uis1, logger)
+  return convertSchema(uis1, logger, detail)
     .then((uis2) => {
       logger.log(uis2)
       return wrapSchema(uis2, detail, logger)
@@ -28,18 +29,18 @@ export function wrapSchema (uis2, detail) {
   })
 }
 
-export function convertSchema (ui1, logger) {
+export function convertSchema (ui1, logger, detail) {
   const newObj = {}
   logger.log('converting...')
   return convertClassName(ui1, newObj, logger)
     .then((ui2) => {
       const key = _.keys(ui1)[0]
       if (ui1[key].fieldGroups) {
-        return convertFieldGroups(ui1, ui2, logger)
+        return convertFieldGroups(ui1, ui2, logger, detail)
       }
       if (ui1[key].fields) {
         logger.log('found fields instead of fieldgroups')
-        ui2.children = convertFields(ui1[key].fields, logger)
+        ui2.children = convertFields(ui1[key].fields, logger, detail)
         return Promise.resolve(ui2)
       }
     })
@@ -65,13 +66,13 @@ export function convertClassName (ui1, ui2, logger) {
   return Promise.resolve(ui2)
 }
 
-export function convertFieldGroups (ui1, ui2, logger) {
+export function convertFieldGroups (ui1, ui2, logger, detail) {
   logger.log('converting field groups')
   const key = _.keys(ui1)[0]
   logger.log(ui1)
   const fgs = ui1[key].fieldGroups || []
   const children = fgs.map((fg) => {
-    const fields = convertFields(fg.fields, logger).concat(convertFieldsets(fg.fieldsets, logger))
+    const fields = convertFields(fg.fields, logger, detail).concat(convertFieldsets(fg.fieldsets, logger))
     return {
       'label': fg.name || '',
       'children': fields
@@ -81,14 +82,14 @@ export function convertFieldGroups (ui1, ui2, logger) {
   return Promise.resolve(ui2)
 }
 
-export function convertFieldsets (fieldsets, logger) {
+export function convertFieldsets (fieldsets, logger, detail) {
   logger.log('converting fieldsets')
   return _.map(fieldsets, (fieldset, key) => {
     logger.log('key: ' + key)
     const newFieldset = {
       model: `properties.${key.split('_').join('')}`,
       collapsible: !!fieldset['switch'] || true,
-      children: convertFields(fieldset.fields, logger)
+      children: convertFields(fieldset.fields, logger, detail)
     }
     if (fieldset.label) {
       newFieldset.label = fieldset.label
@@ -100,7 +101,7 @@ export function convertFieldsets (fieldsets, logger) {
   })
 }
 
-export function convertFields (fields, logger) {
+export function convertFields (fields, logger, detail) {
   logger.log('converting fields...')
   return _.map(fields, (field, key) => {
     const newField = {
@@ -118,7 +119,8 @@ export function convertFields (fields, logger) {
     const placeholder = field.placeholder || field.prompt
     if (placeholder) _.extend(newField, {placeholder})
     setTransforms(newField, field, logger)
-    return setRenderer(newField, field, logger)
+
+    return setRenderer(newField, field, logger, detail)
   })
 }
 
