@@ -1,4 +1,3 @@
-/*eslint complexity:0 */
 import Promise from 'promise'
 import _ from 'lodash'
 import {validateView} from './validate'
@@ -82,6 +81,7 @@ export function convertFieldGroups (ui1, ui2, logger, detail) {
   return Promise.resolve(ui2)
 }
 
+/*eslint-disable complexity */
 export function convertFieldsets (fieldsets, logger, detail) {
   logger.log('converting fieldsets')
   return _.map(fieldsets, (fieldset, key) => {
@@ -124,6 +124,7 @@ export function convertFields (fields, logger, detail) {
   })
 }
 
+/* eslint-enable complexity */
 export function convertObjectArray (field, logger) {
   const result = {
     autoAdd: true,
