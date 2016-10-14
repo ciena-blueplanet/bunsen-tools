@@ -95,7 +95,7 @@ describe('the cli', function () {
   it('.converter() works', function () {
     console.log(cli.converter)
     utils.parseJSON.returns(Promise.resolve('great'))
-    return cli.converter('somefile', 'someoutfile', logger)
+    return cli.converter('somefile', 'someoutfile', {}, logger)
       .then((result) => {
         expect(result).to.be.ok
       })
