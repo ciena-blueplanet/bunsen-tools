@@ -54,6 +54,9 @@ module.exports = {
           },
           {
             model: 'description'
+          },
+          {
+            model: 'autoClean'
           }
         ],
         label: 'General'

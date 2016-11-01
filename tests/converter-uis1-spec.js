@@ -215,9 +215,7 @@ describe('the converter', function () {
   it('.convertSchema() converts a schema', function () {
     return converter.convertSchema(data.uiSchema1, logger)
       .then((result) => {
-        // console.log(JSON.stringify(data.uiSchema2, null, 2))
-        // expect(result).to.eql(data.uiSchema2)
+        expect(result).to.eql(data.uiSchema2)
       })
   })
 })
-

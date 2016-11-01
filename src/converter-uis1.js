@@ -47,7 +47,8 @@ export function convertSchema (ui1, logger, detail) {
       uis2.children.splice(0, 0, {
         children: [
           {model: 'label'},
-          {model: 'description'}
+          {model: 'description'},
+          {model: 'autoClean'}
         ],
         label: 'General'
       })
@@ -81,7 +82,7 @@ export function convertFieldGroups (ui1, ui2, logger, detail) {
   return Promise.resolve(ui2)
 }
 
-/*eslint-disable complexity */
+/* eslint-disable complexity */
 export function convertFieldsets (fieldsets, logger, detail) {
   logger.log('converting fieldsets')
   return _.map(fieldsets, (fieldset, key) => {
