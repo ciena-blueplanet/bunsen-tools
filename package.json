@@ -27,7 +27,7 @@
   "author": "Chris Stoll",
   "license": "MIT",
   "dependencies": {
-    "bunsen-core": "0.12.1",
+    "bunsen-core": "0.22.1",
     "colors": "^1.1.2",
     "commander": "^2.9.0",
     "fs-promise": "^0.5.0",
