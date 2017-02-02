@@ -14,7 +14,7 @@ describe('transforms', function () {
   })
 
   it('exists', function () {
-    expect(transforms).to.be.ok
+    expect(transforms).not.to.equal(undefined)
   })
 
   it('.setTransforms() converts the transforms', function () {

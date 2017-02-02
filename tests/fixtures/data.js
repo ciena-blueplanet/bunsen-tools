@@ -64,16 +64,16 @@ module.exports = {
       {
         label: 'somename',
         children: [
-          { model: 'properties.somefield', label: 'test-field-label' },
-          { model: 'properties.someotherfield', description: 'test-field-desc' },
-          { model: 'properties.anotherfield' },
+          {model: 'properties.somefield', label: 'test-field-label'},
+          {model: 'properties.someotherfield', description: 'test-field-desc'},
+          {model: 'properties.anotherfield'},
           {
             model: 'properties.somefieldset',
             collapsible: true,
             description: 'test-description',
             label: 'test-label',
             children: [
-              { model: 'properties.somefieldset_field', description: 'test-field-help' }
+              {model: 'properties.somefieldset_field', description: 'test-field-help'}
             ]
           }
         ]
@@ -87,15 +87,15 @@ module.exports = {
         {
           name: 'somename',
           fields: {
-            'somefield': { label: 'test-field-label' },
-            'someotherfield': { description: 'test-field-desc' },
+            'somefield': {label: 'test-field-label'},
+            'someotherfield': {description: 'test-field-desc'},
             'anotherfield': {}
           },
           fieldsets: {
             'somefieldset': {
               label: 'test-label',
               description: 'test-description',
-              fields: { 'somefieldset_field': { help: 'test-field-help' } }
+              fields: {'somefieldset_field': {help: 'test-field-help'}}
             }
           }
         }
@@ -107,13 +107,13 @@ module.exports = {
       label: 'Alabel',
       help: 'Ahelp',
       switch: true,
-      fields: { cellA: {label: 'cellAlabel'} }
+      fields: {cellA: {label: 'cellAlabel'}}
     },
     '_fieldSetB': {
       label: 'Blabel',
       description: 'Bdescription',
       switch: false,
-      fields: { cellB: {label: 'cellBlabel'} }
+      fields: {cellB: {label: 'cellBlabel'}}
     }
   }
 }

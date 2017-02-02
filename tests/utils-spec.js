@@ -11,22 +11,22 @@ var strings = require('../assets/strings')
 describe('utils', function () {
   it('checks if a file is a view file or not', function () {
     let value = 'string'
-    expect(utils.isViewFile(value)).not.to.be.ok
+    expect(utils.isViewFile(value)).to.equal(false)
     value = {}
-    expect(utils.isViewFile(value)).not.to.be.ok
+    expect(utils.isViewFile(value)).to.equal(false)
     value = {type: 'form', version: '2.0'}
-    expect(utils.isViewFile(value)).to.be.ok
+    expect(utils.isViewFile(value)).to.equal(true)
   })
 
   it('checks if a file is a model or not', function () {
     let value = 'string'
-    expect(utils.isModelFile(value)).not.to.be.ok
+    expect(utils.isModelFile(value)).to.equal(false)
     value = {'foo': 'bar'}
-    expect(utils.isModelFile(value)).not.to.be.ok
+    expect(utils.isModelFile(value)).to.equal(false)
     value = []
-    expect(utils.isModelFile(value)).not.to.be.ok
+    expect(utils.isModelFile(value)).to.equal(false)
     value = {'type': 'object', properties: {}}
-    expect(utils.isModelFile(value)).to.be.ok
+    expect(utils.isModelFile(value)).not.to.equal(undefined)
   })
 
   it('promisizes a jsonParse fail', function () {
@@ -39,7 +39,7 @@ describe('utils', function () {
   it('promisizes a jsonParse success', function () {
     return utils.parseJSON('{"foo": "bar"}')
      .then((result) => {
-       expect(result).to.be.ok
+       expect(result).not.to.equal(undefined)
      })
   })
 
@@ -65,7 +65,7 @@ describe('utils', function () {
   })
   it('reads a file', function () {
     return utils.readFile('tests/models/fragment.json').then((results) => {
-      expect(results).to.be.ok
+      expect(results).not.to.equal(undefined)
     })
   })
 

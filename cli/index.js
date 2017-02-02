@@ -1,17 +1,18 @@
 #!/usr/bin/env node
 'use strict'
 
+import 'colors'
 import commander from 'commander'
-import Logger from '../lib/logger'
-import {convert as convertUis1} from '../lib/converter-uis1'
-import {convert as convertBv1} from '..//lib/converter-bv1'
-import {validate} from '../lib/validate'
-import {getDefaultOutputPath, parseJSON, getLegacyViewType} from '../lib/utils'
 import fs from 'fs'
 import fsp from 'fs-promise'
 import _ from 'lodash'
+
 import {fillString} from '../assets/strings'
-import 'colors'
+import {convert as convertBv1} from '../lib/converter-bv1'
+import {convert as convertUis1} from '../lib/converter-uis1'
+import Logger from '../lib/logger'
+import {getDefaultOutputPath, getLegacyViewType, parseJSON} from '../lib/utils'
+import {validate} from '../lib/validate'
 import packageInfo from '../package.json'
 
 export function watch (file, callback, watching) {

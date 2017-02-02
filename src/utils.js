@@ -1,5 +1,6 @@
 const fsp = require('fs-promise')
 const _ = require('lodash')
+
 const strings = require('../assets/strings')
 
 export function isViewFile (pojo) {

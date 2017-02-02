@@ -57,7 +57,7 @@ describe('the cli', function () {
     const file = 'somefile'
     const callback = sinon.spy()
     cli.watch(file, callback, true)
-    expect(fs.watch.called).to.be.ok
+    expect(fs.watch.called).not.to.equal(undefined)
     expect(fs.watch.lastCall.args).to.eql([file, {encoding: 'buffer'}, callback])
   })
 
@@ -70,26 +70,26 @@ describe('the cli', function () {
   it('calls validate when told', function () {
     const processMock = {argv: ['', '', 'validate', 'someotherarg']}
     const cmdr = cli.startBunsen(commander, processMock, cli.validateAction, cli.convertAction, '1.1.1')
-    expect(cli.validateAction.called).not.to.be.ok
+    expect(cli.validateAction.called).to.equal(false)
   })
 
   it('calls convert when told', function () {
     const processMock = {argv: ['', '', 'convert', 'someotherarg']}
     const cmdr = cli.startBunsen(commander, processMock, cli.validateAction, cli.convertAction, '1.1.1')
-    expect(cli.convertAction.called).not.to.be.ok
+    expect(cli.convertAction.called).to.equal(false)
   })
 
   it('crashes on bad json', function () {
     return cli.converter('somefile', null, logger)
       .catch((error) => {
-        expect(error).to.be.ok
+        expect(error).not.to.equal(undefined)
       })
   })
 
   it('has options set', function () {
     const processMock = {argv: ['', '', 'validate', 'somearg', 'someotherarg', '-v', '-w']}
     const cmdr = cli.startBunsen(commander, processMock, cli.validateAction, cli.convertAction, logger, '1.1.1')
-    expect(cmdr.args[2].verbose).to.be.ok
+    expect(cmdr.args[2].verbose).not.to.equal(undefined)
   })
 
   it('.converter() works', function () {
@@ -97,19 +97,19 @@ describe('the cli', function () {
     utils.parseJSON.returns(Promise.resolve('great'))
     return cli.converter('somefile', 'someoutfile', {}, logger)
       .then((result) => {
-        expect(result).to.be.ok
+        expect(result).not.to.equal(undefined)
       })
   })
 
   it('.converter() bails if no file specified', function () {
     cli.convertAction.restore()
     const cmdr = cli.convertAction(undefined, undefined, {verbose: true, watch: false})
-    expect(cli.converter.called).not.to.be.ok
+    expect(cli.converter.called).to.equal(undefined)
   })
 
   it('.validateAction() bails if no file specified', function () {
     cli.validateAction.restore()
     const cmdr = cli.validateAction(undefined, undefined, {verbose: true, watch: false})
-    expect(cli.validator.called).not.to.be.ok
+    expect(cli.validator.called).to.equal(undefined)
   })
 })

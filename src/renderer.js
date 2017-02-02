@@ -1,5 +1,6 @@
-import _ from 'lodash'
 import i from 'i'
+import _ from 'lodash'
+
 const inflect = i()
 
 export function convertInstructions (field, logger) {

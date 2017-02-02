@@ -11,7 +11,7 @@ describe('the bv1 view converter', function () {
   })
 
   it('exists', function () {
-    expect(converter).to.be.ok
+    expect(converter).not.to.equal(undefined)
   })
 
   describe('.convert()', function () {
@@ -21,8 +21,8 @@ describe('the bv1 view converter', function () {
           const expected = {
             version: '2.0',
             type: 'form',
-            cells: [ { extends: 'main', label: 'Main' } ],
-            cellDefinitions: { main: { children: [Object] } }
+            cells: [ {extends: 'main', label: 'Main'} ],
+            cellDefinitions: {main: {children: [Object]}}
           }
           const view = JSON.parse(viewJSON)
           converter.convert(view)

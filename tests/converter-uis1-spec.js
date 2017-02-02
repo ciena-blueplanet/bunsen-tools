@@ -20,7 +20,7 @@ describe('the converter', function () {
   })
 
   it('exists', function () {
-    expect(converter).to.be.ok
+    expect(converter).not.to.equal(undefined)
   })
 
   describe('.convert()', function () {
@@ -44,7 +44,7 @@ describe('the converter', function () {
     it('converts the schema', function () {
       return converter.convert({foo: {fields: []}}, 'someotherfile', {}, logger)
         .then((result) => {
-          expect(validateViewSpy.called).to.be.ok
+          expect(validateViewSpy.called).not.to.equal(undefined)
         })
     })
   })
@@ -142,16 +142,16 @@ describe('the converter', function () {
         {
           label: 'somename',
           children: [
-            { model: 'properties.somefield', label: 'test-field-label' },
-            { model: 'properties.someotherfield', description: 'test-field-desc' },
-            { model: 'properties.anotherfield' },
+            {model: 'properties.somefield', label: 'test-field-label'},
+            {model: 'properties.someotherfield', description: 'test-field-desc'},
+            {model: 'properties.anotherfield'},
             {
               model: 'properties.somefieldset',
               collapsible: true,
               label: 'test-label',
               description: 'test-description',
               children: [
-                { model: 'properties.somefieldset_field', description: 'test-field-help' }
+                {model: 'properties.somefieldset_field', description: 'test-field-help'}
               ]
             }
           ]
@@ -198,10 +198,10 @@ describe('the converter', function () {
       compact: true,
       itemCell: {
         children: [
-          { model: 'properties.field1' },
-          { model: 'properties.field2' },
-          { model: 'properties.field3' },
-          { model: 'properties.field4' }
+          {model: 'properties.field1'},
+          {model: 'properties.field2'},
+          {model: 'properties.field3'},
+          {model: 'properties.field4'}
         ]
       },
       showLabel: false,

@@ -22,7 +22,7 @@ describe('the logger', function () {
   })
 
   it('exists', function () {
-    expect(logger).to.be.ok
+    expect(logger).not.to.equal(undefined)
   })
 
   it('logs a message if in verbose mode', function () {
@@ -44,7 +44,7 @@ describe('the logger', function () {
     const spy = spyDuring(console, 'log', () => {
       logger.print('test')
     })
-    expect(spy.called).to.be.ok
+    expect(spy.called).not.to.equal(undefined)
   })
 
   it('does not log a message if not in verbose mode', function () {
@@ -52,7 +52,7 @@ describe('the logger', function () {
     const spy = spyDuring(console, 'log', () => {
       logger.log('test')
     })
-    expect(spy.called).not.to.be.ok
+    expect(spy.called).to.equal(false)
   })
 
   it('logs a warning as a string', function () {

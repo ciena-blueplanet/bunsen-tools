@@ -11,33 +11,31 @@ describe('integration test', function () {
   it('exists', function () {
     return exec('bunsen')
       .then((response) => {
-        expect(response).to.be.ok
+        expect(response).not.to.equal(undefined)
       })
   })
   it('it gives help', function () {
     return exec('bunsen -h')
       .then((response) => {
-        expect(response).to.be.ok
+        expect(response).not.to.equal(undefined)
       })
   })
   it('has a validate command', function () {
     return exec('bunsen validate')
       .then((response) => {
-        expect(response).to.be.ok
+        expect(response).not.to.equal(undefined)
       })
       .catch((error) => {
-        expect(error).to.be.ok
+        expect(error).not.to.equal(undefined)
       })
   })
   it('has a convert command', function () {
     return exec('bunsen convert')
       .then((response) => {
-        expect(response).to.be.ok
+        expect(response).not.to.equal(undefined)
       })
       .catch((error) => {
-        expect(error).to.be.ok
+        expect(error).not.to.equal(undefined)
       })
   })
-  it
 })
-
