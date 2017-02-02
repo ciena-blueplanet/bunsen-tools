@@ -1,4 +1,7 @@
+import i from 'i'
 import _ from 'lodash'
+
+const inflect = i()
 
 export function convertInstructions (field, logger) {
   if (!field.instructions || !field.instructions.length) {
@@ -30,7 +33,7 @@ export function convertInstructions (field, logger) {
     }
   })
   return _.reduce(operators, (result, operator, key) => {
-    if (operator.values) {
+    if (operator.values.length) {
       result[operator.param] = (operator.values).join(',')
     }
     return result
@@ -43,7 +46,7 @@ export function getInstructorValue (inst, field) {
     value = inst.value.split('\'')[1]
   }
   if (inst.value === 'instructor') {
-    value = '${' + field.instructor + '}'
+    value = '${./' + field.instructor + '}'
   }
   if (inst.key) {
     value = `${inst.key}:${value}`
@@ -57,7 +60,7 @@ export function setModelType (options, field) {
       options.modelType = 'resource'
       return
     }
-    options.modelType = field.resourceType
+    options.modelType = inflect.singularize(field.resourceType)
   }
 }
 
@@ -81,8 +84,8 @@ export function smartSet (options, rAttr, uisField, fAttr) {
   }
 }
 
-export function setRenderer (newField, field, logger) {
-  if (!field.type) {
+export function setRenderer (newField, field, logger, detail) {
+  if (!field.type || detail) {
     return newField
   }
   const renderers = {

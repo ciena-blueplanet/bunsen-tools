@@ -1,3 +1,14 @@
+# 1.8.0
+* now adds the 'autoClean' property to the 'general' tab in converted UIS1 views.
+
+# 1.7.0
+No CHANGELOG section found in Pull Request description.
+Use a `# CHANGELOG` section in your Pull Request description to auto-populate the `CHANGELOG.md`
+
+# 1.6.0
+
+* **Added** general tab with label and description properties to converted schemas.
+
 # 1.5.4
 
 * Minor code cleanup and addition of JSDoc comments in source code.

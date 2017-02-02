@@ -25,10 +25,11 @@ export function watch (file, callback, watching) {
  * convert a legacy view to bv1
  * @param {String} inFile the file to read in
  * @param {String} outFile an optional output path
+ * @param {Object} options options for the app
  * @param {Object} logger a logger instance (for logging)
  * @returns {Object<Promise>} a promise
  */
-export function converter (inFile, outFile, logger) {
+export function converter (inFile, outFile, options, logger) {
   outFile = outFile || getDefaultOutputPath(inFile)
   return fsp.readFile(inFile)
     .then((legacyViewJSON) => {
@@ -40,7 +41,7 @@ export function converter (inFile, outFile, logger) {
           switch (legacyViewType) {
             case 'uis1':
             case 'uis1-domain-type':
-              return convertUis1(legacyView, outFile, logger)
+              return convertUis1(legacyView, outFile, options.detail, logger)
             case 'bv1':
               return convertBv1(legacyView, outFile, logger)
           }
@@ -91,9 +92,9 @@ export function convertAction (inFile, outFile, options) {
     logger.warn('no input file specified')
     return
   }
-  converter(inFile, outFile, logger)
+  converter(inFile, outFile, options, logger)
   watch(inFile, (eventType, filename) => {
-    converter(inFile, outFile, logger)
+    converter(inFile, outFile, options, logger)
   }, options.watching)
 }
 
@@ -104,10 +105,11 @@ export function startBunsen (commander, processHandle, convertHandler, validateH
   commander
     .command('convert')
     .description('convert old view formats into UI Schema 2')
+    .option('-v, --verbose', 'more output')
+    .option('-d, --detail', 'make a detail view')
+    .option('-w, --watch', 'watch file for changes')
     .usage('[options] <legacyViewFile> [outputFilePath]')
     .arguments('<legacyViewFile> [viewFile]')
-    .option('-v, --verbose', 'more output')
-    .option('-w, --watch', 'watch file for changes')
     .action(_.bind(convertHandler, commander))
 
   commander

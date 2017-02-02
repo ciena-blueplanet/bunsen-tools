@@ -5,11 +5,11 @@ import {setRenderer} from './renderer'
 import {setTransforms} from './transforms'
 import {validateView} from './validate'
 
-export function convert (uis1, outfile, logger) {
-  return convertSchema(uis1, logger)
+export function convert (uis1, outfile, detail, logger) {
+  return convertSchema(uis1, logger, detail)
     .then((uis2) => {
       logger.log(uis2)
-      return wrapSchema(uis2, logger)
+      return wrapSchema(uis2, detail, logger)
     })
     .then((uis2) => {
       logger.log(JSON.stringify(uis2, null, 2))
@@ -21,26 +21,26 @@ export function convert (uis1, outfile, logger) {
     })
 }
 
-export function wrapSchema (uis2) {
+export function wrapSchema (uis2, detail) {
   return Promise.resolve({
-    type: 'form',
+    type: detail ? 'detail' : 'form',
     version: '2.0',
     cells: uis2.children
   })
 }
 
-export function convertSchema (ui1, logger) {
+export function convertSchema (ui1, logger, detail) {
   const newObj = {}
   logger.log('converting...')
   return convertClassName(ui1, newObj, logger)
     .then((ui2) => {
       const key = _.keys(ui1)[0]
       if (ui1[key].fieldGroups) {
-        return convertFieldGroups(ui1, ui2, logger)
+        return convertFieldGroups(ui1, ui2, logger, detail)
       }
       if (ui1[key].fields) {
         logger.log('found fields instead of fieldgroups')
-        ui2.children = convertFields(ui1[key].fields, logger)
+        ui2.children = convertFields(ui1[key].fields, logger, detail)
         return Promise.resolve(ui2)
       }
     })
@@ -48,7 +48,8 @@ export function convertSchema (ui1, logger) {
       uis2.children.splice(0, 0, {
         children: [
           {model: 'label'},
-          {model: 'description'}
+          {model: 'description'},
+          {model: 'autoClean'}
         ],
         label: 'General'
       })
@@ -66,13 +67,13 @@ export function convertClassName (ui1, ui2, logger) {
   return Promise.resolve(ui2)
 }
 
-export function convertFieldGroups (ui1, ui2, logger) {
+export function convertFieldGroups (ui1, ui2, logger, detail) {
   logger.log('converting field groups')
   const key = _.keys(ui1)[0]
   logger.log(ui1)
   const fgs = ui1[key].fieldGroups || []
   const children = fgs.map((fg) => {
-    const fields = convertFields(fg.fields, logger).concat(convertFieldsets(fg.fieldsets, logger))
+    const fields = convertFields(fg.fields, logger, detail).concat(convertFieldsets(fg.fieldsets, logger))
     return {
       'label': fg.name || '',
       'children': fields
@@ -82,38 +83,50 @@ export function convertFieldGroups (ui1, ui2, logger) {
   return Promise.resolve(ui2)
 }
 
-export function convertFieldsets (fieldsets, logger) {
+/* eslint-disable complexity */
+export function convertFieldsets (fieldsets, logger, detail) {
   logger.log('converting fieldsets')
   return _.map(fieldsets, (fieldset, key) => {
     logger.log('key: ' + key)
-    return {
+    const newFieldset = {
       model: `properties.${key.split('_').join('')}`,
-      label: fieldset.label || '',
-      description: fieldset.description || fieldset.help || '',
       collapsible: !!fieldset['switch'] || true,
-      children: convertFields(fieldset.fields, logger)
+      children: convertFields(fieldset.fields, logger, detail)
     }
+    if (fieldset.label) {
+      newFieldset.label = fieldset.label
+    }
+    if (fieldset.help || fieldset.description) {
+      newFieldset.description = fieldset.help || fieldset.description
+    }
+    return newFieldset
   })
 }
 
-export function convertFields (fields, logger) {
+export function convertFields (fields, logger, detail) {
   logger.log('converting fields...')
   return _.map(fields, (field, key) => {
     const newField = {
-      model: `properties.${key}`,
-      label: _.get(field, 'label', ''),
-      description: _.get(field, 'description', field.help || '')
+      model: `properties.${key}`
     }
     if (field.type === 'objectarray') {
       newField.arrayOptions = convertObjectArray(field, logger)
     }
+    if (field.label) {
+      newField.label = field.label
+    }
+    if (field.help || field.description) {
+      newField.description = field.help || field.description
+    }
     const placeholder = field.placeholder || field.prompt
     if (placeholder) _.extend(newField, {placeholder})
     setTransforms(newField, field, logger)
-    return setRenderer(newField, field, logger)
+
+    return setRenderer(newField, field, logger, detail)
   })
 }
 
+/* eslint-enable complexity */
 export function convertObjectArray (field, logger) {
   const result = {
     autoAdd: true,

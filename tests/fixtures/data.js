@@ -9,6 +9,8 @@ module.exports = {
       label: 'someotherlabel',
       description: 'description',
       placeholder: 'test-placeholder'
+    },
+    fieldC: {
     }
   },
   fieldWithTransforms: {
@@ -52,6 +54,9 @@ module.exports = {
           },
           {
             model: 'description'
+          },
+          {
+            model: 'autoClean'
           }
         ],
         label: 'General'
@@ -59,15 +64,16 @@ module.exports = {
       {
         label: 'somename',
         children: [
-          {model: 'properties.somefield', description: '', label: ''},
-          {model: 'properties.someotherfield', description: '', label: ''},
+          {model: 'properties.somefield', label: 'test-field-label'},
+          {model: 'properties.someotherfield', description: 'test-field-desc'},
+          {model: 'properties.anotherfield'},
           {
             model: 'properties.somefieldset',
             collapsible: true,
-            description: '',
-            label: '',
+            description: 'test-description',
+            label: 'test-label',
             children: [
-              {model: 'properties.somefieldset_field', description: '', label: ''}
+              {model: 'properties.somefieldset_field', description: 'test-field-help'}
             ]
           }
         ]
@@ -81,12 +87,15 @@ module.exports = {
         {
           name: 'somename',
           fields: {
-            'somefield': {},
-            'someotherfield': {}
+            'somefield': {label: 'test-field-label'},
+            'someotherfield': {description: 'test-field-desc'},
+            'anotherfield': {}
           },
           fieldsets: {
             'somefieldset': {
-              fields: {'somefieldset_field': {}}
+              label: 'test-label',
+              description: 'test-description',
+              fields: {'somefieldset_field': {help: 'test-field-help'}}
             }
           }
         }

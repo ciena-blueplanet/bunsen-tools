@@ -20,7 +20,7 @@ describe('renderer', function () {
   it('.convertInstructions() converts select field instructions', function () {
     let field = data.fieldWithInstructions
     const expected = {
-      domainId: '${vnfDomainId}',
+      domainId: '${./vnfDomainId}',
       q: 'label:public,properties.vPort:1000',
       p: 'properties.port:${properties.otherprop}'
     }
@@ -37,7 +37,7 @@ describe('renderer', function () {
   it('.setModelType() sets a model type', function () {
     const options = {}
     renderer.setModelType(options, {resourceType: 'domains'})
-    expect(options.modelType).to.eql('domains')
+    expect(options.modelType).to.eql('domain')
     renderer.setModelType(options, {resourceType: 'wunna.theese.things'})
     expect(options.modelType).to.eql('resource')
   })
@@ -47,7 +47,7 @@ describe('renderer', function () {
     let inst = {value: 'somevalueindicator'}
     expect(renderer.getInstructorValue(inst, field)).to.eql('${somevalueindicator}')
     inst.value = 'instructor'
-    expect(renderer.getInstructorValue(inst, field)).to.eql('${someotherkey}')
+    expect(renderer.getInstructorValue(inst, field)).to.eql('${./someotherkey}')
     inst.value = '\'somevalueindicator\''
     expect(renderer.getInstructorValue(inst, field)).to.eql('somevalueindicator')
   })
@@ -55,7 +55,7 @@ describe('renderer', function () {
   it('.setQuery() sets up a query', function () {
     let expected = {
       resourceTypeId: 'tosca.resourceTypes.Network',
-      domainId: '${vnfDomainId}',
+      domainId: '${./vnfDomainId}',
       q: 'label:public,properties.vPort:1000',
       p: 'properties.port:${properties.otherprop}'
     }
@@ -71,6 +71,13 @@ describe('renderer', function () {
     expect(rendererOptions.query).to.eql(expected)
   })
 
+  it('.setRenderer() chooses the right renderer for detail views, which is none for now', function () {
+    const field = data.fieldWithInstructions
+    const newField = {}
+    renderer.setRenderer(newField, field, logger, true)
+    expect(newField.renderer).to.eql(undefined)
+  })
+
   it('.setRenderer() chooses the right renderer', function () {
     const field = data.fieldWithInstructions
     const expected = {
@@ -80,7 +87,7 @@ describe('renderer', function () {
         labelAttribute: 'label-attr',
         query: {
           resourceTypeId: 'tosca.resourceTypes.Network',
-          domainId: '${vnfDomainId}',
+          domainId: '${./vnfDomainId}',
           q: 'label:public,properties.vPort:1000',
           p: 'properties.port:${properties.otherprop}'
         }
@@ -99,7 +106,7 @@ describe('renderer', function () {
       labelAttribute: 'label-attr',
       query: {
         resourceTypeId: 'tosca.resourceTypes.Network',
-        domainId: '${vnfDomainId}',
+        domainId: '${./vnfDomainId}',
         q: 'label:public,properties.vPort:1000',
         p: 'properties.port:${properties.otherprop}'
       }
