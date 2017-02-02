@@ -1,3 +1,7 @@
+# 1.9.0
+
+* **Upgraded** to latest version of `bunsen-core` as well as other dependencies.
+
 # 1.8.0
 * now adds the 'autoClean' property to the 'general' tab in converted UIS1 views.
 
