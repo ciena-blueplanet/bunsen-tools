@@ -59,15 +59,15 @@ module.exports = {
       {
         label: 'somename',
         children: [
-          { model: 'properties.somefield', description: '', label: '' },
-          { model: 'properties.someotherfield', description: '', label: '' },
+          {model: 'properties.somefield', description: '', label: ''},
+          {model: 'properties.someotherfield', description: '', label: ''},
           {
             model: 'properties.somefieldset',
             collapsible: true,
             description: '',
             label: '',
             children: [
-              { model: 'properties.somefieldset_field', description: '', label: '' }
+              {model: 'properties.somefieldset_field', description: '', label: ''}
             ]
           }
         ]
@@ -86,7 +86,7 @@ module.exports = {
           },
           fieldsets: {
             'somefieldset': {
-              fields: { 'somefieldset_field': {} }
+              fields: {'somefieldset_field': {}}
             }
           }
         }
@@ -98,13 +98,13 @@ module.exports = {
       label: 'Alabel',
       help: 'Ahelp',
       switch: true,
-      fields: { cellA: {label: 'cellAlabel'} }
+      fields: {cellA: {label: 'cellAlabel'}}
     },
     '_fieldSetB': {
       label: 'Blabel',
       description: 'Bdescription',
       switch: false,
-      fields: { cellB: {label: 'cellBlabel'} }
+      fields: {cellB: {label: 'cellBlabel'}}
     }
   }
 }

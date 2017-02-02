@@ -20,7 +20,7 @@ describe('the converter', function () {
   })
 
   it('exists', function () {
-    expect(converter).to.be.ok
+    expect(converter).not.to.equal(undefined)
   })
 
   describe('.convert()', function () {
@@ -44,7 +44,7 @@ describe('the converter', function () {
     it('converts the schema', function () {
       return converter.convert({foo: {fields: []}}, 'someotherfile', logger)
         .then((result) => {
-          expect(validateViewSpy.called).to.be.ok
+          expect(validateViewSpy.called).not.to.equal(undefined)
         })
     })
   })
@@ -127,15 +127,15 @@ describe('the converter', function () {
         {
           label: 'somename',
           children: [
-            { model: 'properties.somefield', description: '', label: '' },
-            { model: 'properties.someotherfield', description: '', label: '' },
+            {model: 'properties.somefield', description: '', label: ''},
+            {model: 'properties.someotherfield', description: '', label: ''},
             {
               model: 'properties.somefieldset',
               collapsible: true,
               description: '',
               label: '',
               children: [
-                { model: 'properties.somefieldset_field', description: '', label: '' }
+                {model: 'properties.somefieldset_field', description: '', label: ''}
               ]
             }
           ]
@@ -182,10 +182,10 @@ describe('the converter', function () {
       compact: true,
       itemCell: {
         children: [
-          { model: 'properties.field1' },
-          { model: 'properties.field2' },
-          { model: 'properties.field3' },
-          { model: 'properties.field4' }
+          {model: 'properties.field1'},
+          {model: 'properties.field2'},
+          {model: 'properties.field3'},
+          {model: 'properties.field4'}
         ]
       },
       showLabel: false,

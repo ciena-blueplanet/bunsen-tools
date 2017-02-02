@@ -1,8 +1,9 @@
-import Promise from 'promise'
 import _ from 'lodash'
-import {validateView} from './validate'
+import Promise from 'promise'
+
 import {setRenderer} from './renderer'
 import {setTransforms} from './transforms'
+import {validateView} from './validate'
 
 export function convert (uis1, outfile, logger) {
   return convertSchema(uis1, logger)
@@ -123,7 +124,7 @@ export function convertObjectArray (field, logger) {
   if (field.order) {
     result.itemCell = {
       children: _.map(field.order.split(','), (prop) => {
-        return { model: `properties.${prop}` }
+        return {model: `properties.${prop}`}
       })
     }
   }

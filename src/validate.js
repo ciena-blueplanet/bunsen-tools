@@ -1,9 +1,10 @@
-import UIS2 from 'bunsen-core/lib/validator/view-schemas/v2'
-import ZSchema from 'z-schema'
-import {parseJSON, readFile, isViewFile, isModelFile} from '../lib/utils'
 import {validate as modelValidator} from 'bunsen-core/lib/validator/model'
-// import {validate as viewValidator} from 'bunsen-core/lib/validator/index'
+import UIS2 from 'bunsen-core/lib/validator/view-schemas/v2'
 import Promise from 'promise'
+import ZSchema from 'z-schema'
+
+import {isModelFile, isViewFile, parseJSON, readFile} from '../lib/utils'
+// import {validate as viewValidator} from 'bunsen-core/lib/validator/index'
 
 const zSchemaValidator = new ZSchema()
 

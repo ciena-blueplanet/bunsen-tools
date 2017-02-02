@@ -28,10 +28,10 @@ describe('renderer', function () {
     field.instructions.push({type: 'filter', operator: 'omit'})
     logger.warn = sinon.spy()
     renderer.convertInstructions(field, logger)
-    expect(logger.warn.called).to.be.ok
+    expect(logger.warn.called).not.to.equal(undefined)
     delete field['instructions']
     const result = renderer.convertInstructions(field, logger)
-    expect(result).not.to.be.ok
+    expect(result).to.equal(undefined)
   })
 
   it('.setModelType() sets a model type', function () {
@@ -110,7 +110,7 @@ describe('renderer', function () {
   it('.smartSet() only sets present properties', function () {
     const options = {'foo': 'bar'}
     renderer.smartSet(options, 'fizz', {})
-    expect(options.fizz).not.to.be.ok
+    expect(options.fizz).to.equal(undefined)
     renderer.smartSet(options, 'fizz', {'fizz': 'buzz'})
     expect(options.fizz).to.eql('buzz')
     renderer.smartSet(options, 'fizz', {'fazz': 'bozz'}, 'fazz')

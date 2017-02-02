@@ -33,7 +33,7 @@ describe('the validator', function () {
   })
 
   it('exists', function () {
-    expect(validate).to.be.ok
+    expect(validate).not.to.equal(undefined)
   })
 
   it('.validateModel() validates a good model', function () {
@@ -46,7 +46,7 @@ describe('the validator', function () {
   it('.validateModel() fails a bad model', function () {
     return validate.validateModel({}, logger)
       .catch((error) => {
-        expect(error).to.be.ok
+        expect(error).not.to.equal(undefined)
       })
   })
 
@@ -54,7 +54,7 @@ describe('the validator', function () {
     sinon.stub(bunsenModelValidator, 'validate').returns({warnings: ['somewarning']})
     sinon.stub(logger, 'warn')
     validate.validateModel({}, logger)
-    expect(logger.warn.called).to.be.ok
+    expect(logger.warn.called).not.to.equal(undefined)
     bunsenModelValidator.validate.restore()
   })
 
@@ -68,12 +68,12 @@ describe('the validator', function () {
   it('.validateView() fails a bad view', function () {
     return validate.validateView({}, logger)
       .catch((error) => {
-        expect(error).to.be.ok
+        expect(error).not.to.equal(undefined)
       })
   })
 
   it('validates a model and a view', function () {
-    expect(validate.validateViewWithModel({}, {}, logger)).to.be.ok
+    expect(validate.validateViewWithModel({}, {}, logger)).not.to.equal(undefined)
   })
 
   it('handles validation for a model', function () {
@@ -107,8 +107,8 @@ describe('the validator', function () {
   it('Rejects if first arg is not a coherent JSON blob trying to be a model or a view', function () {
     return validate.validate(undefined, undefined, logger)
       .catch((error) => {
-        expect(error).to.be.ok
-        expect(errorStub.called).to.be.ok
+        expect(error).not.to.equal(undefined)
+        expect(errorStub.called).not.to.equal(undefined)
       })
   })
 })
